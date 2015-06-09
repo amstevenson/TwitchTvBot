@@ -1,0 +1,8 @@
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.TriviaBot.resources
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.Properties.Resources.resources
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.csproj.GenerateResource.Cache
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Debug\ForlornscTriviaBot.exe
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Debug\ForlornscTriviaBot.pdb
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.exe
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.pdb
+C:\Users\Adamst\documents\visual studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Debug\ForlornscTriviaBot.csprojResolveAssemblyReference.cache
