@@ -58,8 +58,8 @@ namespace ForlornscTriviaBot
                 if (port == 80 || port == 6667)
                 {
                     // Retrieve values from the database for the specific bot
-                    Database.Database database = new Database.Database();
-                    BotData botResults = database.GetBotResults(txtBotName.Text.ToString());
+                    //Database.Database database = new Database.Database();
+                    //BotData botResults = database.GetBotResults(txtBotName.Text.ToString());
 
                     // Create the new bot
                     bot = new IRC.Bot(server, port, botName, channel, password, this);
@@ -90,9 +90,7 @@ namespace ForlornscTriviaBot
             // If these threads are different, it returns true. 
             //
             // The application will crash if this is not checked, however this
-            // is probably only accurate in terms of debugging and not during runtime.
-            // Therefore advise is - if anyone is looking at this - to probably
-            // do this, however it is not 100% required. 
+            // is probably only accurate in terms of debugging and will be okay during runtime.
             //
             if (this.txtChat.InvokeRequired)
             {

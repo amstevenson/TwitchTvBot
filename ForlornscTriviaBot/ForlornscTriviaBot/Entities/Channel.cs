@@ -29,12 +29,23 @@ namespace ForlornscTriviaBot.Entities
         //
         // The objectId is the primary key
         //
-        private String _objectId;
+        private int _objectId;
         [DataMember]
-        public String objectId
+        public int objectId
         {
             get { return _objectId; }
             set { _objectId = value; }
+        }
+
+        //
+        // The foreign key determining the bot the channel belongs to
+        //
+        private int _botID;
+        [DataMember]
+        public int botID
+        {
+            get { return _botID; }
+            set { _botID = value; }
         }
 
         //
@@ -62,45 +73,45 @@ namespace ForlornscTriviaBot.Entities
         //
         // The scores for viewers for correct answers
         //
-        private Score[] _scores;
+        private Scorer[] _scorers;
         [DataMember]
-        public Score[] scores
+        public Scorer[] scorers
         {
-            get { return _scores; }
-            set { _scores = value; }
+            get { return _scorers; }
+            set { _scorers = value; }
         }
 
         //
-        // Channel created at
+        // First constructor, without scorers and commands
         //
-        private String _createdAt;
-        [DataMember]
-        public String createdAt
-        {
-            get { return _createdAt; }
-            set { _createdAt = value; }
-        }
-
-        //
-        // Last updated
-        //
-        private String _updatedAt;
-        [DataMember]
-        public String updatedAt
-        {
-            get { return _updatedAt; }
-            set { _updatedAt = value; }
-        }
-
-        //
-        // Constructors - other values are added in later. 
-        //
-        public Channel(String strObjectId, String strChannelName, String strCreatedAt, String strUpdatedAt)
+        public Channel(int objectId, int botID, String strChannelName)
 	    {
-            this._objectId = strObjectId;
+            this._objectId = objectId;
+            this._botID = botID;
             this._channelName = strChannelName;
-            this._createdAt = strCreatedAt;
-            this._updatedAt = strUpdatedAt;
 	    }
+
+        //
+        // Second constructor, without scorers
+        //
+        public Channel(int objectId, int botID, String strChannelName, Command[] constrCommands)
+        {
+            this._objectId = objectId;
+            this._botID = botID;
+            this._channelName = strChannelName;
+            this._channelCommands = constrCommands;
+        }
+
+        //
+        // Third contructor - with scorers
+        //
+        public Channel(int objectId, int botID, String strChannelName, Command[] constrCommands, Scorer[] constrScorers)
+        {
+            this._objectId = objectId;
+            this._botID = botID;
+            this._channelName = strChannelName;
+            this._channelCommands = constrCommands;
+            this._scorers = constrScorers;
+        }
     }
 }

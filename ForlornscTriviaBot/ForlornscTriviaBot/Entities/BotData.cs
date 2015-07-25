@@ -29,6 +29,28 @@ namespace ForlornscTriviaBot.Entities
     public class BotData
     {
         //
+        // The objectId is the primary key
+        //
+        private int _objectId;
+        [DataMember]
+        public int objectId
+        {
+            get { return _objectId; }
+            set { _objectId = value; }
+        }
+
+        //
+        // The name of the bot.
+        //
+        private String _botName;
+        [DataMember]
+        public String BotName
+        {
+            get { return _botName; }
+            set { _botName = value; }
+        }
+
+        //
         // All of the channels the bot will go to automatically. 
         // Each channel has: scores for viewers for questions and commands.
         //
@@ -57,17 +79,28 @@ namespace ForlornscTriviaBot.Entities
             // Empty
         }
 
-        // Second constructor
-        public BotData(Channel[] channels)
+        // Second Constructor
+        public BotData(int botID, String botName)
         {
+            this._objectId = botID;
+            this._botName = botName;
+        }
+
+        // Second constructor
+        public BotData(int botID, String botName, Channel[] channels)
+        {
+            this._objectId = botID;
+            this._botName = botName;
             this._channels = channels;
         }
 
         // third constructor
-        public BotData(Channel[] channels, TriviaQuestion[] triviaQuestions)
+        public BotData(int botID, Channel[] channels, TriviaQuestion[] triviaQuestions)
         {
+            this._objectId = botID;
             this._channels = channels;
             this._triviaQuestions = triviaQuestions;
         }
+
     }
 }

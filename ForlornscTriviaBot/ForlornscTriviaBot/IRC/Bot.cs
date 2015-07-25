@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using ForlornscTriviaBot.Entities;
 
 // *******************************************************************//
 //                                                                    //
@@ -36,7 +37,9 @@ namespace ForlornscTriviaBot.IRC
         private int port = 6667;
         private bool threadActive;
 
+        // Database Variables
         private BotCommands botCommands;
+        private List<Command> channelCommands; 
 
         // Listen thread
         Thread listen;
@@ -55,9 +58,18 @@ namespace ForlornscTriviaBot.IRC
             this.channel = channel;
             this.password = password;
             this.mainForm = mainForm;
-            this.botCommands = new BotCommands(botName);
+            this.botCommands = new BotCommands(botName); // Assigns the bot name. Used to CRUD values.
             this.threadActive = true;
 
+            // Check to see if the bot is recorded in the database or not.
+            bool botExists = botCommands.DoesBotExist(botName);
+            
+            // if it is not in the database, add it.
+            if (!botExists) botCommands.AddNewBot(botName);
+
+            // Retrieve Database related values specific to the bot.
+            BotData botData = botCommands.GetBotResults(botName);
+              
             // Open the connection to Twitch IRC
             client = new TcpClient("irc.twitch.tv", port);
             nwStream = client.GetStream();
@@ -72,6 +84,9 @@ namespace ForlornscTriviaBot.IRC
             SendMessage("PASS " + password);
             SendMessage("NICK " + botName);
             SendMessage("JOIN #" + channel.ToLower());
+
+            // Test for printing all values.
+            botCommands.PrintAllTestData();
         }
 
         // Read all information from the IRC server - when a message comes through
@@ -123,6 +138,8 @@ namespace ForlornscTriviaBot.IRC
                                 // We know this is a message
                                 if (message.StartsWith("!cmds"))
                                 {
+                                    
+
                                     // show a list of commands
                                     SendMessage("PRIVMSG #" + channel + " : list: blargle blargle");
                                     //Console.WriteLine("goes in here");
@@ -176,4 +193,5 @@ namespace ForlornscTriviaBot.IRC
             threadActive = false;
         }
     }
+
 }

@@ -8,6 +8,9 @@ using System.Web.Script.Serialization;
 using ForlornscTriviaBot.Entities;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Xml;
+using System.Data.SqlClient;
+using System.Data;
 
 // *******************************************************************//
 //                                                                    //
@@ -25,138 +28,221 @@ namespace ForlornscTriviaBot.Database
 {
     class Database
     {
-        // Web request for retrieving values from Parse Database
-        private HttpWebRequest httpWebRequest;
-        private String botName;
-        private DatabaseParser dbParser;
+        // The connection string, found in the webConfig file
+        private static string _ConnectionString;
+            //Properties.Settings.Default.BotDatabaseConnectionString;
 
         // Default constructor
         public Database()
         {
-            // Initialise Parser
-            dbParser = new DatabaseParser();
-        }
+            _ConnectionString = "Data Source=(LocalDB)\\v11.0;AttachDbFilename=|DataDirectory|\\IRC\\BotDatabase.mdf;Integrated Security=True";
+            //_ConnectionString = "Data Source=(LocalDB)\v11.0;AttachDbFilename='C:\\Users\\Adamst\\Documents\\Visual Studio 2012\\Projects\\ForlornscTriviaBot\\ForlornscTriviaBot\\IRC\\BotDatabase.mdf';Integrated Security=True";
+  
+                //Properties.Settings.Default.BotDatabaseConnectionString;
 
-        //
-        // Return the results for a bot. The bot name will be used
-        // to bring back rows from the database that relate to it. 
-        //
-        public BotData GetBotResults(String botName)
-        {
-            this.botName = botName; 
+            //Console.WriteLine(_ConnectionString);
 
-            //
-            // Bot results
-            //
-            BotData results = new BotData();
-            results.channels = GetBotChannels().ToArray();
+            /*
+            String _ConnectionStringTest = "Data Source=(LocalDB)\v11.0;AttachDbFilename='C:\\Users\\Adamst\\Documents\\Visual Studio 2012\\Projects\\ForlornscTriviaBot\\ForlornscTriviaBot\\IRC\\BotDatabase.mdf';Integrated Security=True";
 
-            return results;
-        }
-
-        private List<Channel> GetBotChannels()
-        {
-            // Blank list of channels
-            List<Channel> channelList = new List<Channel>();
-
-            // Parametise query for: get all channels that bot is connected to.
-            Dictionary<String, String> channelQueryHeaders = new Dictionary<String, String>();
-            //channelQueryHeaders.Add("channelName", "Forlornsc");
-
-            String channelUrl = "https://api.parse.com/1/classes/Channel";
-
-            String channelMethod = "post";
-
-            // Set the web client for this query
-            //SetDatabaseQuery(channelMethod, channelUrl, channelQueryHeaders, "{channelName=Forlornsc}"); // POST
-            SetDatabaseQuery(channelMethod, channelUrl, channelQueryHeaders, "");
-
-            try
+            using (SqlConnection conn = new SqlConnection(_ConnectionStringTest))
             {
-                // Get the queries response
-                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                var streamReader = new StreamReader(httpResponse.GetResponseStream());
-
-                // Retrieve all of the channels that a bot is currently connected to.
-                String databaseResponse = streamReader.ReadToEnd();
-                JavaScriptSerializer serialiser = new JavaScriptSerializer();
-                Dictionary<String, object> jsonDictionary = serialiser.Deserialize<Dictionary<String, object>>(databaseResponse);
-
-                channelList = dbParser.ConvertDictionaryResults(jsonDictionary);
-
-                //
-                // How many results
-                //
-                for (int i = 0; i < channelList.Count; i++)
-                    Console.WriteLine("Channel: " + channelList[i].channelName);
-            }
-            catch (WebException err)
-            {
-                Console.WriteLine("Web exception: " + err.Message);
-            }
-
-            return channelList;
-        }
-
-        //
-        // This method populates the http web request with specific values and headers.
-        // Param: method  = GET, POST, DELETE or PUT.
-        // Param: url     = The url of the Parse API query. 
-        // Param: headers = All of the headers required for the Parse Rest API call.  
-        //
-        private void SetDatabaseQuery(String method, String url, Dictionary<String, String> headers, String jsonData)
-        {
-            //
-            // Setting up the HttpWebRequest (The default stuff)
-            //
-            httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest.Headers.Clear();
-            httpWebRequest.Method = method.ToUpper();
-            httpWebRequest.Accept = "*/*";
-            httpWebRequest.ContentType = "application/json";
-            
-            if(method.ToUpper() != "GET")
-            {
-                if (jsonData.Equals(""))
+                try
                 {
-                    Console.WriteLine("No json data supplied for " + method.ToUpper() + " query.");
-                    return;
+                    conn.Open(); // throws if invalid
+
+                    Console.WriteLine("connects");
                 }
-
-                // POST, PUT or DELETE requires -d, -g etc for CURL, which is annoying.
-                //
-                // In order to make a CURL work, this needs to be constructed for the -d section. 
-                // Basically: The structure of a curl json body needs to be written to the request stream. 
-                //
-                byte[] buffer = Encoding.GetEncoding("UTF-8").GetBytes("{ \"channelName\": \" " + "Forlornsc" + "\" }");
-                string result = System.Convert.ToBase64String(buffer);
-                Stream reqstr = httpWebRequest.GetRequestStream();
-                reqstr.Write(buffer, 0, buffer.Length);
-                reqstr.Close();
-            }
-
-            //
-            // Add headers (first two are required for each call made to Parse database)
-            //
-            httpWebRequest.Headers.Add("X-Parse-Application-Id", "");
-            httpWebRequest.Headers.Add("X-Parse-REST-API-Key", "");
-
-            if (headers.Count > 0)
-                //
-                // Add additional non key headers, if any are specified. 
-                // High chance there wouldn't be however because Parse uses CURL.
-                //
-                foreach (String startKey in headers.Keys)
+                catch(Exception ex)
                 {
-                    String stringValue = headers[startKey];
-
-                    // Add as a HTTPWebRequest header
-                    httpWebRequest.Headers.Add(startKey, stringValue);
-
-                    // Debugging
-                    Console.WriteLine("Key: " + startKey);
-                    Console.WriteLine("Value: " + stringValue);
+                    Console.WriteLine("Doesn't connect." + ex);
                 }
+            }
+            */
+        }
+
+        /// <summary>
+        /// Get based method for database operations; retrieving one or more values. 
+        /// </summary>
+        /// <param name="sqlQuery">Supplied text for database query. For example "select * from so and so"</param>
+        /// <param name="type">The type of object to return as a list. This will be one of the following: channel, 
+        /// botdata, command, score or triviaquestion. </param>
+        /// <returns></returns>
+        public dynamic GetDatabaseResults(String sqlQuery, String type)
+        {
+            // Create the connection to the database and the command
+            SqlConnection con = new SqlConnection(_ConnectionString);
+
+            SqlCommand cmd = new SqlCommand(sqlQuery, con);
+
+            // Open the connection to the database
+            using (con)
+            {
+                try
+                {
+                    // Attempt to open the connection 
+                    con.Open();
+
+                    // Execute the command using the "cmd" object.
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    switch (type.ToLower())
+                    {
+                        case "channel":
+
+                            // Collect a list of all channels that a bot is connected to. 
+                            List<Channel> channels = new List<Channel>();
+
+                            while (reader.Read())
+                            {
+                                Channel c = new Channel((int)reader["ChannelID"], (int)reader["BotID"], (String)reader["ChannelName"]);
+                                channels.Add(c);
+                            }
+
+                            return channels;
+
+                        case "botdata":
+
+                            List<BotData> bots = new List<BotData>();
+
+                            while(reader.Read())
+                            {
+                                BotData b = new BotData((int)reader["BotID"], (String)reader["BotName"]);
+                                bots.Add(b);
+                            }
+
+                            return bots;
+
+                        case "command":
+
+                            // Collect a list of all commands for a channel, that is connected to a specific bot (gets confusing)
+                            List<Command> commands = new List<Command>();
+
+                            while (reader.Read())
+                            {
+                                Command c = new Command((int)reader["CommandID"], (int)reader["ChannelID"], (String)reader["CommandName"], (String)reader["CommandBody"]);
+                                commands.Add(c);
+                            }
+
+                            return commands;
+
+                        case "score":
+
+                            return null;
+
+                        case "triviaquestion":
+
+                            return null;
+
+                        default:
+                            return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // In the case of an error
+                    string LastError = ex.Message;
+                    Console.WriteLine(LastError);
+
+                    // return nothing
+                    return null;
+                }
+            }
+        }
+
+        public bool InsertRowQuery(String sqlQuery, String type)
+        {
+            // Create the connection to the database and the command
+            SqlConnection con = new SqlConnection(_ConnectionString);
+
+            SqlCommand cmd = new SqlCommand(sqlQuery, con);
+
+            // Open the connection to the database
+            using (con)
+            {
+                try
+                {
+                    // Attempt to open the connection 
+                    con.Open();
+
+                    // Execute the command using the "cmd" object.
+                    Int32 reader = (Int32)cmd.ExecuteScalar();
+
+                    try
+                    {
+                        /*
+                        BotDatabaseDataSet ds = new BotDatabaseDataSet();
+                        BotDatabaseDataSetTableAdapters.BotTableAdapter ba =
+                            new BotDatabaseDataSetTableAdapters.BotTableAdapter();
+
+                        ba.Fill(ds.Bot);
+
+                        Console.WriteLine(ds.Bot[0].BotName);
+
+                        ds.Bot[0].BotName = "awd";
+
+                        ba.Insert("fsef");
+                        ba.Update(ds);
+
+                        BotDatabaseDataSetTableAdapters.ChannelTableAdapter ca =
+                            new BotDatabaseDataSetTableAdapters.ChannelTableAdapter();
+
+                        ca.Fill(ds.Channel);
+
+                        ds.Channel[0].ChannelName = "tesdwd";
+                        ca.Insert(1, "awdawd");
+                        ca.Update(ds);
+
+                        Console.WriteLine(ds.Bot[0].BotName);
+                        */
+
+
+
+                    }
+                    catch(System.Exception ex)
+                    {
+                        Console.WriteLine("Update failed: " + ex);
+                    }
+
+                    switch (type.ToLower())
+                    {
+                        case "channel":
+
+                            return false;
+
+                        case "botdata":
+
+                            return false;
+
+                        case "bot":
+
+                            return true;
+
+                        case "command":
+
+                            return false;
+
+                        case "score":
+
+                            return false;
+
+                        case "triviaquestion":
+
+                            return false;
+
+                        default:
+                            return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // In the case of an error
+                    string LastError = ex.Message;
+                    Console.WriteLine(LastError);
+
+                    return false;
+                }
+            }
         }
 
     }

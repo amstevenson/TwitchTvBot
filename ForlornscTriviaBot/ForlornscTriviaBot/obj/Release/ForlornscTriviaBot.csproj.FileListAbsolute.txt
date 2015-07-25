@@ -1,0 +1,10 @@
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Release\ForlornscTriviaBot.exe.config
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Release\IRC\BotDatabase.mdf
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Release\IRC\BotDatabase_log.ldf
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Release\ForlornscTriviaBot.exe
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\bin\Release\ForlornscTriviaBot.pdb
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Release\ForlornscTriviaBot.TriviaBot.resources
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Release\ForlornscTriviaBot.Properties.Resources.resources
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Release\ForlornscTriviaBot.csproj.GenerateResource.Cache
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Release\ForlornscTriviaBot.exe
+C:\Users\Adamst\Documents\Visual Studio 2012\Projects\ForlornscTriviaBot\ForlornscTriviaBot\obj\Release\ForlornscTriviaBot.pdb

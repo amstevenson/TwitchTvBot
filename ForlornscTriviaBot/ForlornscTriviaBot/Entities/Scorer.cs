@@ -19,15 +19,13 @@ using System.Runtime.Serialization;
 
 namespace ForlornscTriviaBot.Entities
 {
-
     //
-    // The questions belonging to a specific bot.
-    // This kind of implies that the same set of questions will not be available for
-    // more than one bot, but I guess it makes sense to do it that way. At any rate, its
-    // how I have done it for now. 
+    // A scorer is classed as a person who answers at least one question correcltly.
+    // Their "score" is stored in the database object that is related to them.
+    // I hate the term "scorer"...must be something better.
     //
     [DataContract]
-    public class TriviaQuestion
+    public class Scorer
     {
         //
         // The objectId is the primary key
@@ -43,46 +41,45 @@ namespace ForlornscTriviaBot.Entities
         //
         // The foreign key determining the bot the channel belongs to
         //
-        private int _botID;
+        private int _channelId;
         [DataMember]
-        public int botID
+        public int channelId
         {
-            get { return _botID; }
-            set { _botID = value; }
+            get { return _channelId; }
+            set { _channelId = value; }
         }
 
         //
-        // The question itself. Text and all. For example: "What is 2 + 2?". 
+        // The value of the scorer
         //
-        private String _questionText;
+        private int _scorerValue;
         [DataMember]
-        public String questionText
+        public int scorerValue
         {
-            get { return _questionText; }
-            set { _questionText = value; }
+            get { return _scorerValue; }
+            set { _scorerValue = value; }
         }
 
         //
-        // The answer to the question. For example: " 5 (it actually is...kind of...why not google that one)."
+        // The username of the scorer
         //
-        private String _questionAnswer;
+        private String _scorerUsername;
         [DataMember]
-        public String questionAnswer
+        public String scorerUsername
         {
-            get { return _questionAnswer; }
-            set { _questionAnswer = value; }
+            get { return _scorerUsername; }
+            set { _scorerUsername = value; }
         }
 
         //
         // Constructor
         //
-        public TriviaQuestion(int intObjectId, int intBotId, String strQuestionText, String strQuestionAnswer)
+        public Scorer(int intObjectId, int intChannelId, int intScorerValue, String strScorerUsername)
         {
             this._objectId = intObjectId;
-            this._botID = intBotId;
-            this._questionText = strQuestionText;
-            this._questionAnswer = strQuestionAnswer;
+            this._channelId = intChannelId;
+            this._scorerValue = intScorerValue;
+            this._scorerUsername = strScorerUsername;
         }
-        
     }
 }
