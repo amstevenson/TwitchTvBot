@@ -30,45 +30,22 @@ namespace ForlornscTriviaBot.Database
     {
         // The connection string, found in the webConfig file
         private static string _ConnectionString;
-            //Properties.Settings.Default.BotDatabaseConnectionString;
 
         // Default constructor
         public Database()
         {
             _ConnectionString = "Data Source=(LocalDB)\\v11.0;AttachDbFilename=|DataDirectory|\\IRC\\BotDatabase.mdf;Integrated Security=True";
-            //_ConnectionString = "Data Source=(LocalDB)\v11.0;AttachDbFilename='C:\\Users\\Adamst\\Documents\\Visual Studio 2012\\Projects\\ForlornscTriviaBot\\ForlornscTriviaBot\\IRC\\BotDatabase.mdf';Integrated Security=True";
-  
-                //Properties.Settings.Default.BotDatabaseConnectionString;
-
-            //Console.WriteLine(_ConnectionString);
-
-            /*
-            String _ConnectionStringTest = "Data Source=(LocalDB)\v11.0;AttachDbFilename='C:\\Users\\Adamst\\Documents\\Visual Studio 2012\\Projects\\ForlornscTriviaBot\\ForlornscTriviaBot\\IRC\\BotDatabase.mdf';Integrated Security=True";
-
-            using (SqlConnection conn = new SqlConnection(_ConnectionStringTest))
-            {
-                try
-                {
-                    conn.Open(); // throws if invalid
-
-                    Console.WriteLine("connects");
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Doesn't connect." + ex);
-                }
-            }
-            */
+                                //Properties.Settings.Default.BotDatabaseConnectionString; // Use if above fails. 
         }
 
         /// <summary>
         /// Get based method for database operations; retrieving one or more values. 
         /// </summary>
-        /// <param name="sqlQuery">Supplied text for database query. For example "select * from so and so"</param>
+        /// <param name="sqlQuery">Supplied text for database query. For example "select * from so where so = 'so'"</param>
         /// <param name="type">The type of object to return as a list. This will be one of the following: channel, 
         /// botdata, command, score or triviaquestion. </param>
-        /// <returns></returns>
-        public dynamic GetDatabaseResults(String sqlQuery, String type)
+        /// <returns>A list of objects</returns>
+        public dynamic GetResultsQuery(String sqlQuery, String type)
         {
             // Create the connection to the database and the command
             SqlConnection con = new SqlConnection(_ConnectionString);
@@ -128,11 +105,29 @@ namespace ForlornscTriviaBot.Database
 
                         case "score":
 
-                            return null;
+                            // Collect a list of scorers for a channel. 
+                            List<Scorer> scorers = new List<Scorer>();
+
+                            while(reader.Read())
+                            {
+                                Scorer s = new Scorer((int)reader["ScorerID"], (int)reader["ChannelID"], (int)reader["ScorerValue"], (String)reader["ScorerUsername"]);
+                                scorers.Add(s);
+                            }
+
+                            return scorers;
 
                         case "triviaquestion":
 
-                            return null;
+                            // Collect a list of trivia questions.
+                            List<TriviaQuestion> triviaQuestions = new List<TriviaQuestion>();
+
+                            while(reader.Read())
+                            {
+                                TriviaQuestion t = new TriviaQuestion((int)reader["TriviaQuestionID"], (int)reader["BotID"], (String)reader["QuestionText"], (String)reader["QuestionAnswer"]);
+                                triviaQuestions.Add(t);
+                            }
+
+                            return triviaQuestions;
 
                         default:
                             return null;
@@ -150,7 +145,10 @@ namespace ForlornscTriviaBot.Database
             }
         }
 
-        public bool InsertRowQuery(String sqlQuery, String type)
+        //
+        // Performs a SQLQuery for an update, delete or insert operation. 
+        //
+        public bool InsertUpdateDeleteRowQuery(String sqlQuery)
         {
             // Create the connection to the database and the command
             SqlConnection con = new SqlConnection(_ConnectionString);
@@ -166,73 +164,10 @@ namespace ForlornscTriviaBot.Database
                     con.Open();
 
                     // Execute the command using the "cmd" object.
-                    Int32 reader = (Int32)cmd.ExecuteScalar();
+                    cmd.ExecuteScalar();
 
-                    try
-                    {
-                        /*
-                        BotDatabaseDataSet ds = new BotDatabaseDataSet();
-                        BotDatabaseDataSetTableAdapters.BotTableAdapter ba =
-                            new BotDatabaseDataSetTableAdapters.BotTableAdapter();
-
-                        ba.Fill(ds.Bot);
-
-                        Console.WriteLine(ds.Bot[0].BotName);
-
-                        ds.Bot[0].BotName = "awd";
-
-                        ba.Insert("fsef");
-                        ba.Update(ds);
-
-                        BotDatabaseDataSetTableAdapters.ChannelTableAdapter ca =
-                            new BotDatabaseDataSetTableAdapters.ChannelTableAdapter();
-
-                        ca.Fill(ds.Channel);
-
-                        ds.Channel[0].ChannelName = "tesdwd";
-                        ca.Insert(1, "awdawd");
-                        ca.Update(ds);
-
-                        Console.WriteLine(ds.Bot[0].BotName);
-                        */
-
-
-
-                    }
-                    catch(System.Exception ex)
-                    {
-                        Console.WriteLine("Update failed: " + ex);
-                    }
-
-                    switch (type.ToLower())
-                    {
-                        case "channel":
-
-                            return false;
-
-                        case "botdata":
-
-                            return false;
-
-                        case "bot":
-
-                            return true;
-
-                        case "command":
-
-                            return false;
-
-                        case "score":
-
-                            return false;
-
-                        case "triviaquestion":
-
-                            return false;
-
-                        default:
-                            return false;
-                    }
+                    // If no exception is raised, we can assume the insert query performed correctly. 
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -240,6 +175,42 @@ namespace ForlornscTriviaBot.Database
                     string LastError = ex.Message;
                     Console.WriteLine(LastError);
 
+                    return false;
+                }
+            }
+        }
+
+        public bool DoesRowExist(String sqlQuery)
+        {
+            // Create the connection to the database and the command
+            SqlConnection con = new SqlConnection(Properties.Settings.Default.BotDatabaseConnectionString);
+
+            SqlCommand cmd = new SqlCommand(sqlQuery, con);
+
+            // Open the connection to the database
+            using (con)
+            {
+                try
+                {
+                    // Attempt to open the connection 
+                    con.Open();
+
+                    // Execute the command using the "cmd" object.
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    // If the bot exists
+                    if (reader.HasRows)
+                        return true;
+                    else
+                        return false;
+                }
+                catch (Exception ex)
+                {
+                    // In the case of an error
+                    string LastError = ex.Message;
+                    Console.WriteLine(LastError);
+
+                    // return error/not found
                     return false;
                 }
             }
