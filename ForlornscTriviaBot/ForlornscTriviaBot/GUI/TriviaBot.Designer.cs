@@ -138,7 +138,7 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(202, 20);
             this.txtPassword.TabIndex = 12;
-            this.txtPassword.Text = "oauth:npofynntlrwtbpnpvvmki1yioiu2qa";
+            this.txtPassword.Text = "";
             // 
             // label6
             // 
