@@ -88,7 +88,8 @@
     <Compile Include="GUI\TriviaBot.Designer.cs">
       <DependentUpon>TriviaBot.cs</DependentUpon>
     </Compile>
-    <Compile Include="IRC\BotCommands.cs" />
+    <Compile Include="IRC\ChatCommands.cs" />
+    <Compile Include="IRC\DatabaseCommands.cs" />
     <Compile Include="IRC\Bot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

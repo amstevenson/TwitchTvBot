@@ -24,7 +24,7 @@ namespace ForlornscTriviaBot.IRC
     // Each IRC object created will have one of these for the purpose
     // of CRUD operations. 
     //
-    class BotCommands
+    class DatabaseCommands
     {
         // Class variables
         private String botName;
@@ -32,7 +32,7 @@ namespace ForlornscTriviaBot.IRC
         // Database for retrieving values from Parse
         private Database.Database db;
 
-        public BotCommands(String botName)
+        public DatabaseCommands(String botName)
         {
             // Default constructor
             this.botName = botName;

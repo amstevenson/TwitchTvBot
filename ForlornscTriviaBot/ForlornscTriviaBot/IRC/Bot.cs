@@ -38,7 +38,8 @@ namespace ForlornscTriviaBot.IRC
         private bool threadActive;
 
         // Database Variables
-        private BotCommands botCommands;
+        private DatabaseCommands databaseCommands;
+        private ChatCommands chatCommands;
         private BotData botData;
         private int channelID;
 
@@ -59,21 +60,22 @@ namespace ForlornscTriviaBot.IRC
             this.channel = channel;
             this.password = password;
             this.mainForm = mainForm;
-            this.botCommands = new BotCommands(botName); // Assigns the bot name in the BotCommands class; used for CRUD operations.
+            this.databaseCommands = new DatabaseCommands(botName); // Assigns the bot name in the BotCommands class; used for CRUD operations.
+            this.chatCommands = new ChatCommands(channel, this, databaseCommands); // Create an object of a class that will be used for the chat commands. For example "!cmds".
             this.threadActive = true;
 
             // Check to see if the bot is recorded in the database or not.
             // if it is not in the database, add it.
-            if (!botCommands.DoesBotExist()) 
-                botCommands.AddNewBot();
+            if (!databaseCommands.DoesBotExist())
+                databaseCommands.AddNewBot();
 
             // Retrieve Database related values specific to the bot.
-            this.botData = botCommands.GetBotResults();
-            
+            this.botData = databaseCommands.GetBotResults();
+
             // Check to see if the bot is already in the channel that is entered in the GUI
             // If it doesnt exist in the database, then add it. 
-            if (!botCommands.DoesChannelExist(botData.objectId, channel)) 
-                botCommands.AddChannel(botData.objectId, channel);
+            if (!databaseCommands.DoesChannelExist(botData.objectId, channel))
+                databaseCommands.AddChannel(botData.objectId, channel);
 
             // Get the identifer for the channel to be used in the listen thread. 
             if(botData.channels.Length > 0)
@@ -99,10 +101,10 @@ namespace ForlornscTriviaBot.IRC
             SendMessage("JOIN #" + channel.ToLower());
 
             // Test for printing all values.
-            botCommands.PrintAllTestData();
+            databaseCommands.PrintAllTestData();
 
             // Print out the botData for testing purposes.
-            botCommands.PrintBotData(botData);
+            databaseCommands.PrintBotData(botData);
 
         }
 
@@ -121,7 +123,7 @@ namespace ForlornscTriviaBot.IRC
                         // String array to contain strings, split upon certain criteria
                         String[] pingCheck;
 
-                        // Write to the GUI
+                        // Write out info to the GUI
                         mainForm.SetText(data);
 
                         // If we have PING, reply with PONG
@@ -137,6 +139,9 @@ namespace ForlornscTriviaBot.IRC
                         // If we have a normal message, gather the contents and determine what to do with it.
                         String[] normalMessage;
 
+                        //
+                        // For chat related comments/commands.
+                        //
                         normalMessage = data.Split(new char[] { ' ' }, 4);
                         if (normalMessage.Length > 3)
                         {
@@ -157,24 +162,14 @@ namespace ForlornscTriviaBot.IRC
                             // PRIVMSG refers to a message by a user. 
                             if (type == "PRIVMSG")
                             {
-                                // Extract the username for database purposes later on.
-                                String username = "";
-                                char nameCharacter = ' ';
-
-                                for (int i = 1; i < serverAndUsername.Length -1; i++)
-                                {
-                                    if (nameCharacter.Equals('!')) break;
-
-                                    // Extract the username from the serverandusername string.
-                                    nameCharacter = serverAndUsername.ElementAt(i);
-                                    username += nameCharacter;
-
-                                }
+                                // Extract strings. 
+                                String firstWord = message.Split(new char[] {' '}, 2)[0];
+                                String username = serverAndUsername.Split(new char[] { '!' }, 2)[0].Replace(":", "");
 
                                 // Check if the starting message features a command. 
                                 for(int i = 0; i < commandCount; i++)
                                 {
-                                    if(message.StartsWith(botData.channels[channelID].channelCommands[i].commandName))
+                                    if(firstWord.Equals(botData.channels[channelID].channelCommands[i].commandName))
                                     {
                                         String commandMessage = "PRIVMSG #" + channel + " : " + 
                                             botData.channels[channelID].channelCommands[i].commandBody;
@@ -183,63 +178,35 @@ namespace ForlornscTriviaBot.IRC
                                     }
                                 }
 
-                                // A command used to print out the commands for a specific channel.
-                                if (message.StartsWith("!cmds"))
+                                //
+                                // Chat Commands
+                                //
+                                switch(firstWord)
                                 {
-                                    String commandsMessage = "PRIVMSG #" + channel + " : The commands for this channel are: ";
+                                    // Print out a list of commands.
+                                    case "!cmds":
 
-                                    if (commandCount > 0)
-                                        for (int i = 0; i < commandCount; i++)
-                                        {
-                                            if(i == 0)
-                                                commandsMessage += botData.channels[channelID].channelCommands[i].commandName;
-                                            else
-                                                commandsMessage += ", " + botData.channels[channelID].channelCommands[i].commandName;
-                                        }
-                                    else
-                                        commandsMessage += "Unfortunately, this channel currently has no commands. To add one, please use !addCommand. " + 
-                                        "The format for this operation is: !addCommand !CommandName CommandContent (as a message) .";
+                                        chatCommands.AllCommands(botData.channels[channelID].channelCommands, commandCount, channelID);
 
-                                    // show a list of commands
-                                    SendMessage(commandsMessage);
-                                }
+                                        break;
 
-                                // A command used to add a new command to the database.
-                                else if(message.StartsWith("!addCommand"))
-                                {
-                                    // Extract new command strings
-                                    String[] commandContent = message.Split(new char[] { ' ' }, 3);
-                                    String commandName = commandContent[1];
-                                    String commandBody = commandContent[2];
+                                    // Add a new command.
+                                    case "!addCommand":
 
-                                    // Add the new command to the database.
-                                    if (commandCount < 10)
-                                    {
-                                        if (!botCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
-                                        {
-                                            String messageToSend = "PRIVMSG #" + channel + " : " + commandName + " has been added successfully.";
-                                            botCommands.AddCommand(botData.channels[channelID].objectId, commandName, commandBody);
+                                        chatCommands.AddCommand(message, botData, commandCount, channelID);
 
-                                            // Add the new command to the list.
-                                            List<Command> commands = botCommands.GetCommands(botData.channels[channelID].objectId);
-                                            botData.channels[channelID].channelCommands = commands.ToArray();
+                                        break;
+                                    
+                                    // Delete a command
+                                    case "!deleteCommand":
 
-                                            // Send confirmation of success.
-                                            SendMessage(messageToSend);
-                                        }
-                                        else
-                                        {
-                                            String messageToSend = "PRIVMSG #" + channel + " : " + commandName + " already exists. Please delete it " +
-                                                                                                                 "and add again for alteration purposes.";
-                                            SendMessage(messageToSend);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        String messageToSend = "PRIVMSG #" + channel + " : The maximum amount of commands per channel is 10. " + 
-                                            "To add more, delete a previous command and add a new one.";
-                                        SendMessage(messageToSend);
-                                    }
+                                        chatCommands.DeleteCommand(message, botData, channelID);
+
+                                        break;
+
+                                    // Do nothing.
+                                    default: 
+                                        break;
                                 }
                             }
                         }
@@ -290,5 +257,4 @@ namespace ForlornscTriviaBot.IRC
         }
 
     }
-
 }
