@@ -149,5 +149,79 @@ namespace ForlornscTriviaBot.IRC
                 bot.SendMessage(messageToSend);
             }
         }
+
+        //
+        // Add a new trivia question.
+        //
+        public void AddTriviaQuestion(String wholeChatMessage, BotData botData)
+        {
+            // Remove command from string. 
+            wholeChatMessage = wholeChatMessage.Replace("!addtriviaquestion ", "");
+
+            // Make sure we don't have an index out of bounds exception.
+            int amountOfSemicolons = wholeChatMessage.Count(c => c == ';');
+
+            if (amountOfSemicolons == 1)
+            {
+                // Extract relevant strings; question body, question answer. 
+                String[] triviaQuestionContent = wholeChatMessage.Split(new char[] { ';' }, 2);
+                String triviaQuestion = triviaQuestionContent[0].TrimStart().TrimEnd().Replace("'", "");
+                String triviaAnswer = triviaQuestionContent[1].TrimStart().TrimEnd().Replace("'", "");
+
+                // Add the new question if it doesn't already exist from within the database.
+                if(!databaseCommands.DoesTriviaQuestionExist(botData.objectId, triviaQuestion))
+                {
+                    if(databaseCommands.AddTriviaQuestion(botData.objectId, triviaQuestion, triviaAnswer))
+                    {
+                        // Refresh the questions list; essentially retrieves all of them again.
+                        List<TriviaQuestion> questions = databaseCommands.GetTriviaQuestions(botData.objectId);
+                        botData.triviaQuestions = questions.ToArray();
+
+                        String messageToSend = "PRIVMSG #" + channel + " : Question has been added successfully:) ";
+                        bot.SendMessage(messageToSend);
+                    }
+                    else
+                    {
+                        // If adding fails.
+                        String messageToSend = "PRIVMSG #" + channel + " : Error adding trivia bot, please contact Forlornsc " +
+                                 "if this persists.";
+                        bot.SendMessage(messageToSend);
+                    }
+                }
+                else
+                {
+                    // If the question already exists.
+                    String messageToSend = "PRIVMSG #" + channel + " : Unforunately, this question already exists, please ';' " +
+                                                     "revise and enter it again : (";
+                    bot.SendMessage(messageToSend);
+                }
+            }
+            else
+            {
+                // If there is a formatting error with the provided string.
+                String messageToSend = "PRIVMSG #" + channel + " : Formatting error, please make sure there is one ';' " +
+                                                                     "seperator between the question and answer.";
+                bot.SendMessage(messageToSend);
+            }
+        }
+
+        //
+        // Set the active trivia question. 
+        //
+        public void SetTriviaQuestion(BotData botData)
+        {
+            // Check to see if trivia is enabled. 
+            // If a question is not set, it is set here. This may happen
+            // in the case where people are not providing the correct answer
+            // and the "times up" condition triggers. 
+            if (botData.triviaActive)
+            {
+                // Set a new question. 
+                if (!botData.questionActive)
+                {
+                    int amountOfQuestions = botData.triviaQuestions.Length;
+                }
+            }
+        }
     }
 }

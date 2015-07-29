@@ -466,6 +466,27 @@ namespace ForlornscTriviaBot.IRC
         }
 
         //
+        // Check to see if the trivia question exists within the database. 
+        //
+        public bool DoesTriviaQuestionExist(int botID, String triviaQuestion)
+        {
+            String query = "SELECT * FROM TriviaQuestion "
+                + "WHERE BotID = '" + botID + "' "
+                + "AND QuestionText = '" + triviaQuestion + "'";
+
+            if (db.DoesRowExist(query))
+            {
+                Console.WriteLine("Trivia question exists = true");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Trivia question exists = false");
+                return false;
+            }
+        }
+
+        //
         // Check to see if a command already exists in the database.
         //
         public bool DoesCommandExist(int channelID, String commandName)

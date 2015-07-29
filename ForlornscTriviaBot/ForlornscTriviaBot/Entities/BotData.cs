@@ -73,6 +73,51 @@ namespace ForlornscTriviaBot.Entities
             set { _triviaQuestions = value; }
         }
 
+        //
+        // Boolean to determine if the trivia is active in the channel.
+        //
+        private bool _triviaActive;
+        [DataMember]
+        public bool triviaActive
+        {
+            get { return _triviaActive; }
+            set { _triviaActive = value; }
+        }
+
+        //
+        // Boolean to determine if a question is currently active in the channel.
+        // I.e, whether one can be answered. 
+        //
+        private bool _questionActive;
+        [DataMember]
+        public bool questionActive
+        {
+            get { return _questionActive; }
+            set { _questionActive = value; }
+        }
+
+        //
+        // Set timeout period for questions. 
+        //
+        private float _triviaTimePQuestion;
+        [DataMember]
+        public float triviaTimePQuestion
+        {
+            get { return _triviaTimePQuestion; }
+            set { _triviaTimePQuestion = value; }
+        }
+
+        //
+        // Set the active question via the identifer.  
+        //
+        private int _triviaActiveQuestionID;
+        [DataMember]
+        public int triviaActiveQuestionID
+        {
+            get { return _triviaActiveQuestionID; }
+            set { _triviaActiveQuestionID = value; }
+        }
+
         // First (empty) constructor
         public BotData()
         {
@@ -84,6 +129,8 @@ namespace ForlornscTriviaBot.Entities
         {
             this._objectId = botID;
             this._botName = botName;
+            this._triviaActive = false;
+            this._questionActive = false;
         }
 
         // Second constructor
@@ -92,6 +139,8 @@ namespace ForlornscTriviaBot.Entities
             this._objectId = botID;
             this._botName = botName;
             this._channels = channels;
+            this._triviaActive = false;
+            this._questionActive = false;
         }
 
         // third constructor
@@ -100,6 +149,8 @@ namespace ForlornscTriviaBot.Entities
             this._objectId = botID;
             this._channels = channels;
             this._triviaQuestions = triviaQuestions;
+            this._triviaActive = false;
+            this._questionActive = false;
         }
 
     }

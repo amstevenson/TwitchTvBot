@@ -178,11 +178,21 @@ namespace ForlornscTriviaBot.IRC
                                     }
                                 }
 
+                                // Check if the starting message is the answer to a trivia question
+                                // TODO STILL
+                                //
+                                //
+
                                 //
                                 // Chat Commands
                                 //
-                                switch(firstWord)
+                                switch(firstWord.ToLower())
                                 {
+                                    // Print out the help for the chat, to give a summary of commands. 
+                                    case "!help":
+
+                                        break;
+
                                     // Print out a list of commands.
                                     case "!cmds":
 
@@ -191,20 +201,62 @@ namespace ForlornscTriviaBot.IRC
                                         break;
 
                                     // Add a new command.
-                                    case "!addCommand":
+                                    case "!addcommand":
 
                                         chatCommands.AddCommand(message, botData, commandCount, channelID);
 
                                         break;
                                     
                                     // Delete a command
-                                    case "!deleteCommand":
+                                    case "!deletecommand":
 
                                         chatCommands.DeleteCommand(message, botData, channelID);
 
                                         break;
 
-                                    // Do nothing.
+                                    // Start the trivia
+                                    case "!starttrivia":
+
+                                        // Toggle state and start trivia
+                                        botData.triviaActive = true;
+                                        botData.triviaTimePQuestion = 15.00f;
+                                        chatCommands.SetTriviaQuestion(botData);
+
+                                        break;
+
+                                    // Add a new trivia question
+                                    case "!addtriviaquestion":
+
+                                        chatCommands.AddTriviaQuestion(message, botData);
+
+                                        break;
+
+                                    // Delete a trivia question
+                                    case "!deletetriviaquestion":
+
+                                        break;
+
+                                    // Stop the trivia
+                                    case "!stoptrivia":
+
+                                        // Toggle state and stop trivia
+                                        botData.triviaActive = false;
+
+                                        break;
+
+                                    // Set the timeout for the trivia questions.
+                                    // Determines how long people have to answer.
+                                    case "!settimeperquestion":
+
+                                        break;
+
+                                    // Change the topic of the trivia. 
+                                    // For example, history, gaming etc. 
+                                    case "!changetriviatopic":
+
+                                        break;
+
+                                    // Do nothing by default. 
                                     default: 
                                         break;
                                 }
@@ -216,8 +268,7 @@ namespace ForlornscTriviaBot.IRC
             }
             catch (Exception e)
             {
-                listen.Abort();
-                Console.WriteLine("Error: " + e.Message);
+                Console.WriteLine("Error triggered: " + e.Message);
             }
 
             // If not active, abort. 

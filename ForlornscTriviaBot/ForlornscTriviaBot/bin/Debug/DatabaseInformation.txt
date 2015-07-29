@@ -29,7 +29,7 @@ commands 1: Name = !fumomo
 commands 2: Name = !hotchocolate
 commands 3: Name = !testington
 commands 4: Name = !test
-commands 5: Name = !Saxy
+commands 9: Name = !AnarchyInTheUK
 
 ------------------------------------------------------------------------------------
 
