@@ -27,16 +27,16 @@ namespace ForlornscTriviaBot.IRC
     class DatabaseCommands
     {
         // Class variables
-        private String botName;
+        private String _botName;
 
         // Database for retrieving values from Parse
-        private Database.Database db;
+        private Database.Database _db;
 
         public DatabaseCommands(String botName)
         {
             // Default constructor
-            this.botName = botName;
-            this.db = new Database.Database();
+            this._botName = botName;
+            this._db = new Database.Database();
         }
 
         //
@@ -50,7 +50,7 @@ namespace ForlornscTriviaBot.IRC
                "SELECT CAST(Scope_Identity() AS int)";
 
             // Add new Channel entry to the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Channel added = true");
                 return true;
@@ -73,7 +73,7 @@ namespace ForlornscTriviaBot.IRC
                             "AND BotID = '" + botID + "' ";
 
             // Delete a specific channel from the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Deleting Channel, success = true");
 
@@ -97,8 +97,8 @@ namespace ForlornscTriviaBot.IRC
         //
         public List<Channel> GetChannels()
         {
-            List<Channel> channels = db.GetResultsQuery("SELECT * FROM Channel " + 
-                                                           "JOIN Bot ON Channel.BotID = Bot.BotID WHERE BotName = '" + this.botName + "';"
+            List<Channel> channels = _db.GetResultsQuery("SELECT * FROM Channel " +
+                                                           "JOIN Bot ON Channel.BotID = Bot.BotID WHERE BotName = '" + this._botName + "';"
                                                             , "channel");
             return channels;
         }
@@ -117,7 +117,7 @@ namespace ForlornscTriviaBot.IRC
                            "SELECT CAST(Scope_Identity() AS int)";
 
             // Add new Command entry to the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Command added = true");
                 return true;
@@ -136,7 +136,7 @@ namespace ForlornscTriviaBot.IRC
         //
         public List<Command> GetCommands(int channelID)
         {
-            List<Command> commands = db.GetResultsQuery("SELECT * FROM Command WHERE ChannelID = '" + channelID + "'", "command");
+            List<Command> commands = _db.GetResultsQuery("SELECT * FROM Command WHERE ChannelID = '" + channelID + "'", "command");
             return commands;
         }
 
@@ -149,7 +149,7 @@ namespace ForlornscTriviaBot.IRC
                             "WHERE CommandID = '" + commandID + "'";
 
             // Delete a specific command
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Deleting command, success = true");
                 return true;
@@ -170,7 +170,7 @@ namespace ForlornscTriviaBot.IRC
                             "WHERE ChannelID = '" + channelID + "'";
 
             // Delete a specific command
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Deleting all commands, success = true");
                 return true;
@@ -189,7 +189,7 @@ namespace ForlornscTriviaBot.IRC
         //
         public List<TriviaQuestion> GetTriviaQuestions(int botID)
         {
-            List<TriviaQuestion> questions = db.GetResultsQuery("SELECT * FROM TriviaQuestion " 
+            List<TriviaQuestion> questions = _db.GetResultsQuery("SELECT * FROM TriviaQuestion " 
                                                               + "WHERE BotID = '" + botID + "'"
                                                               , "triviaquestion");
             return questions;
@@ -209,7 +209,7 @@ namespace ForlornscTriviaBot.IRC
                            "SELECT CAST(Scope_Identity() AS int)";
 
             // Add new TriviaQuestion entry to the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("TriviaQuestion added = true");
                 return true;
@@ -230,7 +230,7 @@ namespace ForlornscTriviaBot.IRC
                             "WHERE TriviaQuestionID = '" + triviaQuestionID + "'";
 
             // Delete a trivia question
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("trivia question deleted = true");
                 return true;
@@ -247,7 +247,7 @@ namespace ForlornscTriviaBot.IRC
         //
         public List<Scorer> GetChannelViewers(int channelID)
         {
-            List<Scorer> scorers = db.GetResultsQuery("SELECT * FROM Scorer "
+            List<Scorer> scorers = _db.GetResultsQuery("SELECT * FROM Scorer "
                                                     + "WHERE ChannelID = '" + channelID + "'"
                                                     , "score");
             return scorers;
@@ -264,7 +264,7 @@ namespace ForlornscTriviaBot.IRC
                            "SELECT CAST(Scope_Identity() AS int)";
 
             // Add new viewer/scorer entry to the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Scorer/viewer added = true");
                 return true;
@@ -287,7 +287,7 @@ namespace ForlornscTriviaBot.IRC
                 "WHERE ScorerID = '" + scorerID + "' ";
 
             // Increment the score by a specific value. 
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Score updated = true");
                 return true;
@@ -313,7 +313,7 @@ namespace ForlornscTriviaBot.IRC
                 "WHERE ScorerID = '" + scorerID + "' ";
 
             // Increment the score by a specific value. 
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Score updated = true");
                 return true;
@@ -334,7 +334,7 @@ namespace ForlornscTriviaBot.IRC
                 "WHERE ScorerID = '" + scorerID + "'";
 
             // Delete viewer from the database 
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Scorer/viewer deleted = true");
                 return true;
@@ -355,7 +355,7 @@ namespace ForlornscTriviaBot.IRC
                 "WHERE ChannelID = '" + channelID + "'";
 
             // Delete all of the viewers that relate to a specific channel.
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Delete all channel viewers, success = true");
                 return true;
@@ -374,7 +374,7 @@ namespace ForlornscTriviaBot.IRC
         public BotData GetBotResults()
         {
             // Getting all of the bot information.
-            List<BotData> bd = db.GetResultsQuery("SELECT * FROM Bot WHERE BotName = '" + this.botName + "';", "botdata");
+            List<BotData> bd = _db.GetResultsQuery("SELECT * FROM Bot WHERE BotName = '" + this._botName + "';", "botdata");
 
             // Create empty botdata. 
             BotData botData = new BotData();
@@ -386,7 +386,7 @@ namespace ForlornscTriviaBot.IRC
                 botData = bd[0];
 
                 // Get all of the channels
-                List<Channel> channels = db.GetResultsQuery("SELECT * FROM Channel WHERE BotID = '" + botData.objectId + "';", "channel");
+                List<Channel> channels = _db.GetResultsQuery("SELECT * FROM Channel WHERE BotID = '" + botData.objectId + "';", "channel");
                 botData.channels = channels.ToArray();
 
                 // Once we have the channels, find the commands and scorers for each channel.
@@ -453,7 +453,7 @@ namespace ForlornscTriviaBot.IRC
             String query = "SELECT * FROM Channel "
                 + "WHERE BotID = '" + botID + "' " 
                 + "AND ChannelName = '" + channelName + "'";
-            if(db.DoesRowExist(query))
+            if (_db.DoesRowExist(query))
             {
                 Console.WriteLine("Channel exists = true");
                 return true;
@@ -474,7 +474,7 @@ namespace ForlornscTriviaBot.IRC
                 + "WHERE BotID = '" + botID + "' "
                 + "AND QuestionText = '" + triviaQuestion + "'";
 
-            if (db.DoesRowExist(query))
+            if (_db.DoesRowExist(query))
             {
                 Console.WriteLine("Trivia question exists = true");
                 return true;
@@ -494,7 +494,7 @@ namespace ForlornscTriviaBot.IRC
             String query = "SELECT * FROM Command "
                 + "WHERE ChannelID = '" + channelID + "' "
                 + "AND CommandName = '" + commandName + "'";
-            if (db.DoesRowExist(query))
+            if (_db.DoesRowExist(query))
             {
                 Console.WriteLine("Channel exists = true");
                 return true;
@@ -512,8 +512,8 @@ namespace ForlornscTriviaBot.IRC
         //
         public bool DoesBotExist()
         {
-            String query = "SELECT * FROM Bot WHERE BotName = '" + this.botName + "'";
-            if (db.DoesRowExist(query))
+            String query = "SELECT * FROM Bot WHERE BotName = '" + this._botName + "'";
+            if (_db.DoesRowExist(query))
             {
                 Console.WriteLine("Bot exists = true");
                 return true;
@@ -532,11 +532,11 @@ namespace ForlornscTriviaBot.IRC
         public bool AddNewBot()
         {
             String query = "INSERT INTO Bot (BotName) " +
-                           "VALUES ('" + this.botName + "');" +
+                           "VALUES ('" + this._botName + "');" +
                            "SELECT CAST(Scope_Identity() AS int)";
 
             // Add new bot entry to the database
-            if (db.InsertUpdateDeleteRowQuery(query))
+            if (_db.InsertUpdateDeleteRowQuery(query))
             {
                 Console.WriteLine("Bot added = true");
                 return true;
@@ -595,11 +595,11 @@ namespace ForlornscTriviaBot.IRC
         //
         public void PrintAllTestData()
         {
-            List<BotData> bd = db.GetResultsQuery("SELECT * FROM Bot", "botdata");
-            List<Channel> channels = db.GetResultsQuery("SELECT * FROM Channel", "channel");
-            List<Command> commands = db.GetResultsQuery("SELECT * FROM Command", "command");
-            List<Scorer> scorers = db.GetResultsQuery("SELECT * FROM Scorer", "scorer");
-            List<TriviaQuestion> triviaQuestions = db.GetResultsQuery("SELECT * FROM TriviaQuestion", "triviaquestion");
+            List<BotData> bd = _db.GetResultsQuery("SELECT * FROM Bot", "botdata");
+            List<Channel> channels = _db.GetResultsQuery("SELECT * FROM Channel", "channel");
+            List<Command> commands = _db.GetResultsQuery("SELECT * FROM Command", "command");
+            List<Scorer> scorers = _db.GetResultsQuery("SELECT * FROM Scorer", "scorer");
+            List<TriviaQuestion> triviaQuestions = _db.GetResultsQuery("SELECT * FROM TriviaQuestion", "triviaquestion");
 
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter(@"DatabaseInformation.txt"))

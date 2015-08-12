@@ -1,35 +1,21 @@
 Bot 1: Name = TestBot
 Bot 2: Name = Test
 Bot 4: Name = ForlornBot
-Bot 5: Name = ForlornBotd
-Bot 6: Name = ForlornBottesterington
-Bot 7: Name = ForlornBotwadawdawd
-Bot 8: Name = wdawdwa
-Bot 9: Name = wwwwwwwwwwww
-Bot 10: Name = eeeeeee
-Bot 11: Name = aaaaaaaaaa
-Bot 12: Name = wadawdawd
-Bot 13: Name = Bobington
-Bot 14: Name = Forlorn
 
 ------------------------------------------------------------------------------------
 
 Channel 1: BotID = 1 Name = ForlornSC
 Channel 2: BotID = 1 Name = Fumomo
 Channel 3: BotID = 4 Name = Forlornsc
-Channel 4: BotID = 14 Name = Forlornsc
-Channel 5: BotID = 14 Name = Forlornscd
-Channel 6: BotID = 4 Name = Fumomo
-Channel 7: BotID = 4 Name = SaxyPaul
-Channel 8: BotID = 4 Name = Khantael
 
 ------------------------------------------------------------------------------------
 
-commands 1: Name = !fumomo
-commands 2: Name = !hotchocolate
-commands 3: Name = !testington
-commands 4: Name = !test
-commands 9: Name = !AnarchyInTheUK
+commands 1: Name = !bengil
+commands 2: Name = !fumomo
+commands 3: Name = !fumomia
+commands 4: Name = !slackunited
+commands 5: Name = !chloe
+commands 6: Name = !Fuwu
 
 ------------------------------------------------------------------------------------
 

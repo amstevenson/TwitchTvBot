@@ -25,75 +25,100 @@ namespace ForlornscTriviaBot.IRC
     class Bot
     {
         // Form for calling methods
-        private TriviaBot mainForm;
-
+        private TriviaBot _mainForm;
+        
         // Client variables
-        private TcpClient client;
-        private NetworkStream nwStream;
-        private StreamReader reader;
-        private StreamWriter writer;
+        private TcpClient _client;
+        private NetworkStream _nwStream;
+        private StreamReader _reader;
+        private StreamWriter _writer;
 
-        private String server = "", botName = "", channel = "", password = "";
-        private int port = 6667;
-        private bool threadActive;
+        private String _server = "", _botName = "", _channel = "", _password = "";
+        private int _port = 6667;
+        private bool _threadData, _threadTrivia, _threadUsers;
+
+        // Threading/processor variables
+        private Thread _checkData;
+        private Thread _checkTrivia;
+        private Thread _checkUsers;
+
+        private ThreadProcessor _triviaProcessor;
+        private ThreadProcessor _userProcessor;
 
         // Database Variables
-        private DatabaseCommands databaseCommands;
-        private ChatCommands chatCommands;
-        private BotData botData;
-        private int channelID;
-
-        // Listen thread
-        Thread listen;
-
-        public Bot()
-        { 
-            // Default constructor
-        }
+        private DatabaseCommands _databaseCommands;
+        private ChatCommands _chatCommands;
+        private BotData _botData;
+        private int _channelID;
 
         public Bot(String server, int port, String botName, String channel, String password, TriviaBot mainForm)
         {
             // Assign values to global variables
-            this.server = server;
-            this.port = port;
-            this.botName = botName;
-            this.channel = channel;
-            this.password = password;
-            this.mainForm = mainForm;
-            this.databaseCommands = new DatabaseCommands(botName); // Assigns the bot name in the BotCommands class; used for CRUD operations.
-            this.chatCommands = new ChatCommands(channel, this, databaseCommands); // Create an object of a class that will be used for the chat commands. For example "!cmds".
-            this.threadActive = true;
+            this._server = server;
+            this._port = port;
+            this._botName = botName;
+            this._channel = channel;
+            this._password = password;
+            this._mainForm = mainForm;
+            this._databaseCommands = new DatabaseCommands(botName); // Assigns the bot name in the BotCommands class; used for CRUD operations.
+            this._chatCommands = new ChatCommands(channel, this, _databaseCommands); // Create an object of a class that will be used for the chat commands. For example "!cmds".
+            this._threadData = true;
+            this._threadTrivia = true;
+            this._threadUsers = true;
 
             // Check to see if the bot is recorded in the database or not.
             // if it is not in the database, add it.
-            if (!databaseCommands.DoesBotExist())
-                databaseCommands.AddNewBot();
+            if (!_databaseCommands.DoesBotExist())
+                _databaseCommands.AddNewBot();
 
             // Retrieve Database related values specific to the bot.
-            this.botData = databaseCommands.GetBotResults();
+            this._botData = _databaseCommands.GetBotResults();
 
             // Check to see if the bot is already in the channel that is entered in the GUI
             // If it doesnt exist in the database, then add it. 
-            if (!databaseCommands.DoesChannelExist(botData.objectId, channel))
-                databaseCommands.AddChannel(botData.objectId, channel);
+            if (!_databaseCommands.DoesChannelExist(_botData.objectId, channel))
+                _databaseCommands.AddChannel(_botData.objectId, channel);
 
             // Get the identifer for the channel to be used in the listen thread. 
-            if(botData.channels.Length > 0)
-            for (int i = 0; i < botData.channels.Length; i++)
+            if (_botData.channels.Length > 0)
+                for (int i = 0; i < _botData.channels.Length; i++)
             {
-                if (botData.channels[i].channelName.Equals(channel))
-                    channelID = i;
+                if (_botData.channels[i].channelName.Equals(channel))
+                    _channelID = i;
             }
 
             // Open the connection to Twitch IRC
-            client = new TcpClient("irc.twitch.tv", port);
-            nwStream = client.GetStream();
-            reader = new StreamReader(nwStream, Encoding.GetEncoding("iso8859-1"));
-            writer = new StreamWriter(nwStream, Encoding.GetEncoding("iso8859-1"));
+            _client = new TcpClient("irc.twitch.tv", port);
+            _nwStream = _client.GetStream();
+            _reader = new StreamReader(_nwStream, Encoding.GetEncoding("iso8859-1"));
+            _writer = new StreamWriter(_nwStream, Encoding.GetEncoding("iso8859-1"));
 
             // Start a thread that reads all data from IRC
-            listen = new Thread(new ThreadStart(Listen));
-            listen.Start();
+            _checkData = new Thread(new ThreadStart(Listen));
+            _checkData.IsBackground = true;
+            _checkData.Start();
+
+            // Start a thread that checks the trivia states once every 3 seconds. 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
+            int intervalTimeInMilliseconds = 3000;
+            _triviaProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "trivia", channel), new Logger(), intervalTimeInMilliseconds);
+
+            _checkTrivia = new Thread(new ThreadStart(CheckTrivia));
+            _checkTrivia.IsBackground = true;
+            _checkTrivia.Priority = ThreadPriority.Lowest;
+            _checkTrivia.Start();
+            
+            // Start a thread that refreshes the users in the channel every minute or so.
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
+            intervalTimeInMilliseconds = 20000;
+            _userProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "user", channel), new Logger(), intervalTimeInMilliseconds);
+
+            _checkUsers = new Thread(new ThreadStart(CheckChannelUsers));
+            _checkUsers.IsBackground = true;
+            _checkUsers.Priority = ThreadPriority.Lowest;
+            _checkUsers.Start();
 
             // Login to the service by providing credentials
             SendMessage("PASS " + password);
@@ -101,11 +126,32 @@ namespace ForlornscTriviaBot.IRC
             SendMessage("JOIN #" + channel.ToLower());
 
             // Test for printing all values.
-            databaseCommands.PrintAllTestData();
+            _databaseCommands.PrintAllTestData();
 
             // Print out the botData for testing purposes.
-            databaseCommands.PrintBotData(botData);
+            _databaseCommands.PrintBotData(_botData);
 
+            /*
+            // Testing queues.
+            Stack<int> test = new Stack<int>();
+            
+            test.Push(5);
+            test.Push(10);
+            test.Push(20);
+            test.Push(40);
+
+            Console.WriteLine("length before = " + test.Count());
+
+            foreach(int value in test)
+            {
+                Console.WriteLine(value);
+            }
+
+            int popped = test.Pop();
+
+            Console.WriteLine("popped item = " + popped);
+            Console.WriteLine("length after = " + test.Count());
+             */
         }
 
         // Read all information from the IRC server - when a message comes through
@@ -114,17 +160,17 @@ namespace ForlornscTriviaBot.IRC
         {
             try
             {
-                while (threadActive)
+                while (_threadData)
                 {
                     String data = "";
 
-                    while ((data = reader.ReadLine()) != null)
+                    while ((data = _reader.ReadLine()) != null)
                     {
                         // String array to contain strings, split upon certain criteria
                         String[] pingCheck;
 
                         // Write out info to the GUI
-                        mainForm.SetText(data);
+                        _mainForm.SetText(data);
 
                         // If we have PING, reply with PONG
                         // This needs to be here, else IRC will kick the bot out of the channel.
@@ -157,7 +203,7 @@ namespace ForlornscTriviaBot.IRC
                             String channel = normalMessage[2] = normalMessage[2].Replace("#", "");
                             String message = normalMessage[3] = normalMessage[3].Replace(":", "");
 
-                            int commandCount = botData.channels[channelID].channelCommands.Length;
+                            int commandCount = _botData.channels[_channelID].channelCommands.Length;
 
                             // PRIVMSG refers to a message by a user. 
                             if (type == "PRIVMSG")
@@ -169,10 +215,10 @@ namespace ForlornscTriviaBot.IRC
                                 // Check if the starting message features a command. 
                                 for(int i = 0; i < commandCount; i++)
                                 {
-                                    if(firstWord.Equals(botData.channels[channelID].channelCommands[i].commandName))
+                                    if (firstWord.Equals(_botData.channels[_channelID].channelCommands[i].commandName))
                                     {
-                                        String commandMessage = "PRIVMSG #" + channel + " : " + 
-                                            botData.channels[channelID].channelCommands[i].commandBody;
+                                        String commandMessage = "PRIVMSG #" + channel + " :" +
+                                            _botData.channels[_channelID].channelCommands[i].commandBody;
 
                                         SendMessage(commandMessage);
                                     }
@@ -196,21 +242,21 @@ namespace ForlornscTriviaBot.IRC
                                     // Print out a list of commands.
                                     case "!cmds":
 
-                                        chatCommands.AllCommands(botData.channels[channelID].channelCommands, commandCount, channelID);
+                                        _chatCommands.AllCommands(_botData.channels[_channelID].channelCommands, commandCount, _channelID);
 
                                         break;
 
                                     // Add a new command.
                                     case "!addcommand":
 
-                                        chatCommands.AddCommand(message, botData, commandCount, channelID);
+                                        _chatCommands.AddCommand(message, _botData, commandCount, _channelID);
 
                                         break;
                                     
                                     // Delete a command
                                     case "!deletecommand":
 
-                                        chatCommands.DeleteCommand(message, botData, channelID);
+                                        _chatCommands.DeleteCommand(message, _botData, _channelID);
 
                                         break;
 
@@ -218,16 +264,16 @@ namespace ForlornscTriviaBot.IRC
                                     case "!starttrivia":
 
                                         // Toggle state and start trivia
-                                        botData.triviaActive = true;
-                                        botData.triviaTimePQuestion = 15.00f;
-                                        chatCommands.SetTriviaQuestion(botData);
+                                        _botData.triviaActive = true;
+                                        _botData.triviaTimePQuestion = 15.00f;
+                                        _chatCommands.SetTriviaQuestion(_botData);
 
                                         break;
 
                                     // Add a new trivia question
                                     case "!addtriviaquestion":
 
-                                        chatCommands.AddTriviaQuestion(message, botData);
+                                        _chatCommands.AddTriviaQuestion(message, _botData);
 
                                         break;
 
@@ -240,7 +286,7 @@ namespace ForlornscTriviaBot.IRC
                                     case "!stoptrivia":
 
                                         // Toggle state and stop trivia
-                                        botData.triviaActive = false;
+                                        _botData.triviaActive = false;
 
                                         break;
 
@@ -270,10 +316,41 @@ namespace ForlornscTriviaBot.IRC
             {
                 Console.WriteLine("Error triggered: " + e.Message);
             }
+        }
 
-            // If not active, abort. 
-            if (!threadActive)
-                listen.Abort();
+        // Create a new thread that listens to the state of the BotData's
+        // booleans to determine whether or not trivia is active, and also
+        // if a question is set or not - 'set' is defined by if there is not an
+        // active question that is being 'counted' down, I.e in the progress of
+        // being answered.
+        private void CheckTrivia()
+        {
+            while (_threadTrivia)
+            {
+                _triviaProcessor.Run();
+            }
+        }
+
+        //
+        // Refresh the users in the channel. The thread assigned to this method determines the users in the
+        // channel by creating a certain amount of objects (Users). This is then used for bot command validations.
+        // For example, mods can only use !deleteCommand etc. 
+        //
+        private void CheckChannelUsers()
+        {
+            while (_threadUsers)
+            {
+                _userProcessor.Run();
+            }
+        }
+
+        //
+        // Identify exceptions global to the variables defined by the thread processors. 
+        //
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Log exception / send notification.
+            new Logger().Log("-Global unhandled exception:" + e.ExceptionObject.ToString(), 0);
         }
 
         //
@@ -283,8 +360,8 @@ namespace ForlornscTriviaBot.IRC
         public void LeaveChannel()
         {
             // Make the bot leave the current channel
-            writer.WriteLine("PART #" + channel.ToLower());
-            writer.Flush();
+            _writer.WriteLine("PART #" + _channel.ToLower());
+            _writer.Flush();
         }
 
         //
@@ -292,20 +369,49 @@ namespace ForlornscTriviaBot.IRC
         //
         public void SendMessage(string message)
         {
-            writer.WriteLine(message + "\r\n");
-            writer.Flush();
+            _writer.WriteLine(message + "\r\n");
+            _writer.Flush();
         }
 
         //
-        // Make sure we close the thread down from above upon exiting. 
+        // Make sure we close the threads down from above upon exiting. 
         // Else we will have memory leaks and an application that will
         // not fully close.
         //
-        public void DisposeThread()
+        public void DisposeThreads()
         {
-            listen.Abort();
-            threadActive = false;
-        }
+            Console.WriteLine("Closing application, aborting threads.");
 
+            // Try, catch, finally required to abort threads, as per
+            // MSDN specification.
+            try
+            {
+                _checkData.Abort();
+                _checkTrivia.Abort();
+                _checkUsers.Abort();
+            }
+            catch (ThreadAbortException)
+            { }
+            finally
+            { }
+
+            // Just incase a thread remains active after closure of the application.
+            _threadData = false;
+            _threadTrivia = false;
+            _threadUsers = false;
+
+            // Thread output
+            try
+            {
+                Console.WriteLine("Data thread: " + _checkData.IsAlive);
+                Console.WriteLine("Trivia thread: " + _checkTrivia.IsAlive);
+                Console.WriteLine("Users thread: " + _checkUsers.IsAlive);
+            } catch(NullReferenceException)
+            {
+                Console.WriteLine("Thread not defined/instansiated.");
+            }
+
+
+        }
     }
 }

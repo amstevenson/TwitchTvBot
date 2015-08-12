@@ -111,7 +111,7 @@ namespace ForlornscTriviaBot
             {
                 // Make the bot leave the channel(test)
                 //bot.LeaveChannel();
-                bot.DisposeThread();
+                bot.DisposeThreads();
             }
             catch (NullReferenceException)
             { } // For when we exit without connecting

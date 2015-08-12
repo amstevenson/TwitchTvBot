@@ -9,16 +9,16 @@ namespace ForlornscTriviaBot.IRC
 {
     class ChatCommands
     {
-        private String channel;
-        private Bot bot;
-        private DatabaseCommands databaseCommands;
+        private String _channel;
+        private Bot _bot;
+        private DatabaseCommands _databaseCommands;
 
         public ChatCommands(String channel, Bot bot, DatabaseCommands databaseCommands)
         {
             // Default constructor, requires all of the global variables.
-            this.channel = channel;
-            this.bot = bot;
-            this.databaseCommands = databaseCommands;
+            this._channel = channel;
+            this._bot = bot;
+            this._databaseCommands = databaseCommands;
         }
 
         //
@@ -26,7 +26,7 @@ namespace ForlornscTriviaBot.IRC
         //
         public void AllCommands(Command[] channelCommands, int commandCount, int channelID)
         {
-            String commandsMessage = "PRIVMSG #" + channel + " : The commands for this channel are: ";
+            String commandsMessage = "PRIVMSG #" + _channel + " : The commands for this channel are: ";
 
             if (commandCount > 0)
                 for (int i = 0; i < commandCount; i++)
@@ -41,7 +41,7 @@ namespace ForlornscTriviaBot.IRC
                 "The format for this operation is: !addCommand !CommandName CommandContent (as a message) .";
 
             // show a list of commands
-            bot.SendMessage(commandsMessage);
+            _bot.SendMessage(commandsMessage);
         }
 
         //
@@ -56,39 +56,63 @@ namespace ForlornscTriviaBot.IRC
 
             if (commandName.StartsWith("!"))
             {
-                // Add the new command to the database.
-                if (commandCount < 10)
+                // If we dont start with illegal functions
+                if (!commandBody.ToLower().StartsWith("/ban") && !commandBody.ToLower().StartsWith("/timeout")
+                    && !commandBody.ToLower().StartsWith("/unban") && !commandBody.ToLower().StartsWith("/slow")
+                    && !commandBody.ToLower().StartsWith("/slowoff") && !commandBody.ToLower().StartsWith("/subscribers")
+                    && !commandBody.ToLower().StartsWith("/subscribersoff") && !commandBody.ToLower().StartsWith("/clear")
+                    && !commandBody.ToLower().StartsWith("/r9kbeta") && !commandBody.ToLower().StartsWith("/r9kbetaoff"))
                 {
-                    if (!databaseCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
+                    // If the length is correct
+                    if (commandBody.Length < 200)
                     {
-                        String messageToSend = "PRIVMSG #" + channel + " : " + commandName + " has been added successfully.";
-                        databaseCommands.AddCommand(botData.channels[channelID].objectId, commandName, commandBody);
+                        // If we are below the maximum ammount of commands
+                        if (commandCount < 30)
+                        {
+                            // If the command doesnt already exist.
+                            if (!_databaseCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
+                            {
+                                String messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " has been added successfully.";
+                                _databaseCommands.AddCommand(botData.channels[channelID].objectId, commandName, commandBody);
 
-                        // Add the new command to the list.
-                        List<Command> commands = databaseCommands.GetCommands(botData.channels[channelID].objectId);
-                        botData.channels[channelID].channelCommands = commands.ToArray();
+                                // Add the new command to the list.
+                                List<Command> commands = _databaseCommands.GetCommands(botData.channels[channelID].objectId);
+                                botData.channels[channelID].channelCommands = commands.ToArray();
 
-                        // Send confirmation of success.
-                        bot.SendMessage(messageToSend);
+                                // Send confirmation of success.
+                                _bot.SendMessage(messageToSend);
+                            }
+                            else
+                            {
+                                String messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " already exists. Please delete it " +
+                                                                                                     "and add again for alteration purposes.";
+                                _bot.SendMessage(messageToSend);
+                            }
+                        }
+                        else
+                        {
+                            String messageToSend = "PRIVMSG #" + _channel + " : The maximum amount of commands per channel is 30. " +
+                                "To add more, delete a previous command and add a new one.";
+                            _bot.SendMessage(messageToSend);
+                        }
                     }
                     else
                     {
-                        String messageToSend = "PRIVMSG #" + channel + " : " + commandName + " already exists. Please delete it " +
-                                                                                             "and add again for alteration purposes.";
-                        bot.SendMessage(messageToSend);
+                        String messageToSend = "PRIVMSG #" + _channel + " : The command exceeds 200 characters, please shorten it and try again :)";
+                        _bot.SendMessage(messageToSend);
                     }
                 }
                 else
                 {
-                    String messageToSend = "PRIVMSG #" + channel + " : The maximum amount of commands per channel is 10. " +
-                        "To add more, delete a previous command and add a new one.";
-                    bot.SendMessage(messageToSend);
+                    String messageToSend = "PRIVMSG #" + _channel + " : Please don't be naughty! I won't ban or kick people without a good reason..."
+                                         + "at least offer me money or food first!";
+                    _bot.SendMessage(messageToSend);
                 }
             }
             else
             {
-                String messageToSend = "PRIVMSG #" + channel + " : The command does not start with a '!', please revise and try again. ";
-                bot.SendMessage(messageToSend);
+                String messageToSend = "PRIVMSG #" + _channel + " : The command does not start with a '!', please revise and try again. ";
+                _bot.SendMessage(messageToSend);
             }
         }
 
@@ -101,7 +125,7 @@ namespace ForlornscTriviaBot.IRC
             String commandName = wholeChatMessage.Split(new char[] { ' ' }, 3)[1];
 
             // Delete the command.
-            if (databaseCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
+            if (_databaseCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
             {
                 int commandID = 0;
                 String messageToSend = "";
@@ -117,17 +141,17 @@ namespace ForlornscTriviaBot.IRC
                 // The identifer will never be 0, so we can use that as a condition. 
                 if (commandID != 0)
                 {
-                    if(databaseCommands.DeleteCommand(commandID))
+                    if (_databaseCommands.DeleteCommand(commandID))
                     {
                         // Refresh the commands list. 
-                        List<Command> commands = databaseCommands.GetCommands(botData.channels[channelID].objectId);
+                        List<Command> commands = _databaseCommands.GetCommands(botData.channels[channelID].objectId);
                         botData.channels[channelID].channelCommands = commands.ToArray();
 
                         // Alter the message. 
-                        messageToSend = "PRIVMSG #" + channel + " : " + commandName + " has been deleted successfully.";
+                        messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " has been deleted successfully.";
                     }
                     else
-                        messageToSend = "PRIVMSG #" + channel + " : " + commandName + " has not been deleted. Please contact me, I want to find out why :(";
+                        messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " has not been deleted. Please contact me, I want to find out why :(";
                 }
                 else
                 {
@@ -137,16 +161,16 @@ namespace ForlornscTriviaBot.IRC
                 if (!messageToSend.Equals(""))
                 {
                     // Send confirmation of success.
-                    bot.SendMessage(messageToSend);
+                    _bot.SendMessage(messageToSend);
                 }
                 else
                     Console.WriteLine("Error deleting command, technical error. Most likely a command identifer mismatch.");
             }
             else
             {
-                String messageToSend = "PRIVMSG #" + channel + " : " + commandName + " does not exist; it needs to be added before " +
+                String messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " does not exist; it needs to be added before " +
                                                                                      "it can be deleted.";
-                bot.SendMessage(messageToSend);
+                _bot.SendMessage(messageToSend);
             }
         }
 
@@ -169,39 +193,39 @@ namespace ForlornscTriviaBot.IRC
                 String triviaAnswer = triviaQuestionContent[1].TrimStart().TrimEnd().Replace("'", "");
 
                 // Add the new question if it doesn't already exist from within the database.
-                if(!databaseCommands.DoesTriviaQuestionExist(botData.objectId, triviaQuestion))
+                if (!_databaseCommands.DoesTriviaQuestionExist(botData.objectId, triviaQuestion))
                 {
-                    if(databaseCommands.AddTriviaQuestion(botData.objectId, triviaQuestion, triviaAnswer))
+                    if (_databaseCommands.AddTriviaQuestion(botData.objectId, triviaQuestion, triviaAnswer))
                     {
                         // Refresh the questions list; essentially retrieves all of them again.
-                        List<TriviaQuestion> questions = databaseCommands.GetTriviaQuestions(botData.objectId);
+                        List<TriviaQuestion> questions = _databaseCommands.GetTriviaQuestions(botData.objectId);
                         botData.triviaQuestions = questions.ToArray();
 
-                        String messageToSend = "PRIVMSG #" + channel + " : Question has been added successfully:) ";
-                        bot.SendMessage(messageToSend);
+                        String messageToSend = "PRIVMSG #" + _channel + " : Question has been added successfully:) ";
+                        _bot.SendMessage(messageToSend);
                     }
                     else
                     {
                         // If adding fails.
-                        String messageToSend = "PRIVMSG #" + channel + " : Error adding trivia bot, please contact Forlornsc " +
+                        String messageToSend = "PRIVMSG #" + _channel + " : Error adding trivia bot, please contact Forlornsc " +
                                  "if this persists.";
-                        bot.SendMessage(messageToSend);
+                        _bot.SendMessage(messageToSend);
                     }
                 }
                 else
                 {
                     // If the question already exists.
-                    String messageToSend = "PRIVMSG #" + channel + " : Unforunately, this question already exists, please ';' " +
+                    String messageToSend = "PRIVMSG #" + _channel + " : Unforunately, this question already exists, please ';' " +
                                                      "revise and enter it again : (";
-                    bot.SendMessage(messageToSend);
+                    _bot.SendMessage(messageToSend);
                 }
             }
             else
             {
                 // If there is a formatting error with the provided string.
-                String messageToSend = "PRIVMSG #" + channel + " : Formatting error, please make sure there is one ';' " +
+                String messageToSend = "PRIVMSG #" + _channel + " : Formatting error, please make sure there is one ';' " +
                                                                      "seperator between the question and answer.";
-                bot.SendMessage(messageToSend);
+                _bot.SendMessage(messageToSend);
             }
         }
 

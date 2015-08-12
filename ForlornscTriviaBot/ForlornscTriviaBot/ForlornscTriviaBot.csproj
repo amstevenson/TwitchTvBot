@@ -78,10 +78,12 @@
     </Compile>
     <Compile Include="Database\Database.cs" />
     <Compile Include="Entities\Channel.cs" />
+    <Compile Include="Entities\Chat.cs" />
     <Compile Include="Entities\Command.cs" />
     <Compile Include="Entities\BotData.cs" />
     <Compile Include="Entities\Scorer.cs" />
     <Compile Include="Entities\TriviaQuestion.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="GUI\TriviaBot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +93,8 @@
     <Compile Include="IRC\ChatCommands.cs" />
     <Compile Include="IRC\DatabaseCommands.cs" />
     <Compile Include="IRC\Bot.cs" />
+    <Compile Include="IRC\ThreadProcessor.cs" />
+    <Compile Include="JsonParser\JsonParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GUI\TriviaBot.resx">
