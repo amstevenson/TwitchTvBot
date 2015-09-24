@@ -112,7 +112,7 @@ namespace ForlornscTriviaBot.IRC
             // Start a thread that refreshes the users in the channel every minute or so.
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
-            intervalTimeInMilliseconds = 20000;
+            intervalTimeInMilliseconds = 3000;
             _userProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "user", channel), new Logger(), intervalTimeInMilliseconds);
 
             _checkUsers = new Thread(new ThreadStart(CheckChannelUsers));
@@ -130,28 +130,6 @@ namespace ForlornscTriviaBot.IRC
 
             // Print out the botData for testing purposes.
             _databaseCommands.PrintBotData(_botData);
-
-            /*
-            // Testing queues.
-            Stack<int> test = new Stack<int>();
-            
-            test.Push(5);
-            test.Push(10);
-            test.Push(20);
-            test.Push(40);
-
-            Console.WriteLine("length before = " + test.Count());
-
-            foreach(int value in test)
-            {
-                Console.WriteLine(value);
-            }
-
-            int popped = test.Pop();
-
-            Console.WriteLine("popped item = " + popped);
-            Console.WriteLine("length after = " + test.Count());
-             */
         }
 
         // Read all information from the IRC server - when a message comes through

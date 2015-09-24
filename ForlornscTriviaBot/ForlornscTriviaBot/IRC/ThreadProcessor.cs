@@ -194,7 +194,10 @@ namespace ForlornscTriviaBot.IRC
             // Create a results object based on the response of the distributed API
             Chat returnModerators = jsonParser.ConvertDictionaryToResults(returnDictionary);
 
-            
+            for(int i = 0; i < returnModerators.numModerators; i++)
+            {
+                Console.WriteLine(returnModerators.channelModerators[i].username);
+            }
         }
     }
 

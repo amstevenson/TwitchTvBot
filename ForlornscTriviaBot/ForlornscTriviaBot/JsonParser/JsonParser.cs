@@ -88,8 +88,8 @@ namespace ForlornscTriviaBot.JsonParser
         }
 
         /// <summary>
-        /// This method creates and returns an instance of a 'Results' object based on a 
-        /// deserialised dictionary of strings and objects. 
+        /// This method returns a list of the chat's moderators. This is essentially treated as the means
+        /// of ensuring that a user has a certain elevation level.
         /// </summary>
         /// <param name="dictionary">The deserialised dictionary that is returned from 
         /// the "GetWebResponseDictionary" method. </param>
@@ -109,56 +109,59 @@ namespace ForlornscTriviaBot.JsonParser
             // based on the type of object for each instance.
             try
             {
-                foreach (string startKey in dictionary.Keys)
+                foreach (String startKey in dictionary.Keys)
                 {
                     // The key of the current dictionary
                     obj = dictionary[startKey];
 
-                    Console.WriteLine(startKey);
-
-                    if (obj is ArrayList)
+                    if(obj is Dictionary<String, Object>)
                     {
-                        Console.WriteLine(startKey);
+                        // Find the chatters; we are not interested in the links or the amount of users.
+                        Dictionary<String, Object> chatterObject = (Dictionary<String, Object>)obj;
 
-
-                        /*
-                        // We have the ArrayList of events
-                        ArrayList userArrayList = (ArrayList)obj;
-
-                        // initialise the event list
-                        userList = new List<User>(userArrayList.Count);
-
-                        // In the scope of the results collected from the 
-                        // distributed API. The users are split up into
-                        // individual dictionaries of <string, string>
-                        for (int i = 0; i < userArrayList.Count; i++)
+                        foreach(String chatterKey in chatterObject.Keys)
                         {
-                            // Get the specific dictionary with the event information inside of it
-                            Dictionary<string, object> userDictionary = (Dictionary<string, object>)userArrayList[i];
+                            obj = chatterObject[chatterKey];
 
-                            // Create a blank user object
-                            User u = new User("Unknown");
-
-                            // For each key we have for this dictionary, retrieve the key name and the corresponding value
-                            foreach (string username in userDictionary.Keys)
+                            // If we have found the moderators arraylist, extract the details of each
+                            // and then return it as a chat object.
+                            if(chatterKey.Equals("moderators"))
                             {
-                                // Store the corresponding value for the key
-                                string strKeyValue = (string)eventDictionary[eventKey];
+                                if(obj.GetType() == typeof(ArrayList))
+                                {
+                                    ArrayList moderatorArrayList = (ArrayList)obj;
+                                    userList = new List<User>(moderatorArrayList.Count);
 
-                                
+                                    
+                                    for(int i = 0; i < moderatorArrayList.Count; i++)
+                                    {
+                                        String moderatorName = (String)moderatorArrayList[i];
 
+                                        if (!moderatorName.Equals(""))
+                                        {
+                                            User u = new User(moderatorName);
+
+                                            // Add the user object to the list
+                                            userList.Add(u);
+                                        }
+
+                                    }
+
+                                    // if the list is not empty, assign it to the chat object.
+                                    if (userList.Count > 0)
+                                    {
+                                        chat.channelModerators = userList.ToArray();
+                                        chat.numModerators = userList.Count;
+                                    }
+                                    else
+                                    {
+                                        chat.numModerators = 0;
+                                    }
+
+                                    return chat;
+                                }
                             }
-
-                            // Add the new event to the list
-                            userList.Add(u);
                         }
-                        
-                        
-                        // Finally, if the events list's size is more than zero, set the array of Events
-                        // for the Results object.
-                        if (userList.Count > 0)
-                            chat.channelModerators = userList.ToArray();
-                        */
                     }
                 }
             }
@@ -169,6 +172,10 @@ namespace ForlornscTriviaBot.JsonParser
             catch (NullReferenceException ex)
             {
                 Console.WriteLine("Null reference exception: " + ex.Message);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Exception triggered: " + ex.Message);
             }
 
             return chat;

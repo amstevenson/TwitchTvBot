@@ -14,8 +14,19 @@ commands 1: Name = !bengil
 commands 2: Name = !fumomo
 commands 3: Name = !fumomia
 commands 4: Name = !slackunited
-commands 5: Name = !chloe
 commands 6: Name = !Fuwu
+commands 7: Name = !whatnext
+commands 10: Name = !Greenie
+commands 11: Name = !deathknight
+commands 14: Name = !Greencactaur
+commands 15: Name = !Forlornscyoutube
+commands 16: Name = !wanwan
+commands 18: Name = !nano
+commands 20: Name = !tea
+commands 21: Name = !amelia
+commands 22: Name = !bathtime
+commands 23: Name = !dreams
+commands 24: Name = !adam
 
 ------------------------------------------------------------------------------------
 
