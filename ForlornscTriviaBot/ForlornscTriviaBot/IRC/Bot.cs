@@ -35,6 +35,7 @@ namespace ForlornscTriviaBot.IRC
 
         private String _server = "", _botName = "", _channel = "", _password = "";
         private int _port = 6667;
+        private int _messageCount = 0;
         private bool _threadData, _threadTrivia, _threadUsers;
 
         // Threading/processor variables
@@ -112,7 +113,7 @@ namespace ForlornscTriviaBot.IRC
             // Start a thread that refreshes the users in the channel every minute or so.
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
-            intervalTimeInMilliseconds = 3000;
+            intervalTimeInMilliseconds = 100000;
             _userProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "user", channel), new Logger(), intervalTimeInMilliseconds);
 
             _checkUsers = new Thread(new ThreadStart(CheckChannelUsers));
@@ -179,9 +180,13 @@ namespace ForlornscTriviaBot.IRC
                             String serverAndUsername = normalMessage[0];
                             String type = normalMessage[1];
                             String channel = normalMessage[2] = normalMessage[2].Replace("#", "");
-                            String message = normalMessage[3] = normalMessage[3].Replace(":", "");
+                            String message = normalMessage[3] = normalMessage[3].Replace(":", "").Replace("'", "");
 
+                            // The amount of commands we have.
                             int commandCount = _botData.channels[_channelID].channelCommands.Length;
+
+                            // Increment the message count.
+                            _messageCount++;
 
                             // PRIVMSG refers to a message by a user. 
                             if (type == "PRIVMSG")
@@ -190,9 +195,10 @@ namespace ForlornscTriviaBot.IRC
                                 String firstWord = message.Split(new char[] {' '}, 2)[0];
                                 String username = serverAndUsername.Split(new char[] { '!' }, 2)[0].Replace(":", "");
 
-                                // Check if the starting message features a command. 
+                                // Perform all of the command checks. 
                                 for(int i = 0; i < commandCount; i++)
                                 {
+                                    // Check if the starting message features a command. 
                                     if (firstWord.Equals(_botData.channels[_channelID].channelCommands[i].commandName))
                                     {
                                         String commandMessage = "PRIVMSG #" + channel + " :" +
@@ -200,11 +206,14 @@ namespace ForlornscTriviaBot.IRC
 
                                         SendMessage(commandMessage);
                                     }
+
+                                    // Check if a command is repeatable or not, and if so, determine if we are at the point
+                                    // where we need to write it to the IRC.
+
                                 }
 
                                 // Check if the starting message is the answer to a trivia question
                                 // TODO STILL
-                                //
                                 //
 
                                 //
@@ -227,6 +236,7 @@ namespace ForlornscTriviaBot.IRC
                                     // Add a new command.
                                     case "!addcommand":
 
+
                                         _chatCommands.AddCommand(message, _botData, commandCount, _channelID);
 
                                         break;
@@ -235,6 +245,21 @@ namespace ForlornscTriviaBot.IRC
                                     case "!deletecommand":
 
                                         _chatCommands.DeleteCommand(message, _botData, _channelID);
+
+                                        break;
+
+                                    // Change the repeatable state of a command. The first parameter is a boolean and the second
+                                    // the number of lines before the command body is written to the IRC.
+                                    case "!editcommandrepeat":
+
+                                        _chatCommands.UpdateCommandRepeat(message, _botData, _channelID);
+
+                                        break;
+
+                                    // Change the body of a command.
+                                    case "!editcommand":
+
+                                        _chatCommands.UpdateCommand(message, _botData, _channelID);
 
                                         break;
 
@@ -390,6 +415,26 @@ namespace ForlornscTriviaBot.IRC
             }
 
 
+        }
+
+        /// <summary>
+        /// Special characters are represented by a certain number after the &# section.
+        /// This method appends that value to the string, so that it can be represented and
+        /// interpreted by a HTML encoder.
+        /// </summary>
+        /// <param name="text">The string text</param>
+        /// <returns>Encoded string.</returns>
+        public string HTMLEncodeSpecialChars(string text)
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (char c in text)
+            {
+                if (c > 127) // special chars
+                    sb.Append(String.Format("&#{0};", (int)c));
+                else
+                    sb.Append(c);
+            }
+            return sb.ToString();
         }
     }
 }

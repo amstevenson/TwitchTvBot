@@ -196,7 +196,7 @@ namespace ForlornscTriviaBot.IRC
 
             for(int i = 0; i < returnModerators.numModerators; i++)
             {
-                Console.WriteLine(returnModerators.channelModerators[i].username);
+                Console.WriteLine("Moderator name: " + returnModerators.channelModerators[i].username);
             }
         }
     }

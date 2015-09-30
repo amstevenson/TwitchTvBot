@@ -67,14 +67,39 @@ namespace ForlornscTriviaBot.Entities
         }
 
         //
+        // A bit (in the database) of the value 0 or 1. Determines (like a boolean)
+        // whether the command will be repeated or not.
+        //
+        private bool _commandRepeat;
+        [DataMember]
+        public bool commandRepeat
+        {
+            get { return _commandRepeat; }
+            set { _commandRepeat = value; }
+        }
+
+        //
+        // How many lines will pass before the command is repeated.
+        //
+        private int _commandRepeatCount;
+        [DataMember]
+        public int commandRepeatCount
+        {
+            get { return _commandRepeatCount; }
+            set { _commandRepeatCount = value; }
+        }
+
+        //
         // Constructor
         //
-        public Command(int objectId, int channelId, String strCommandName, String strCommandBody)
+        public Command(int objectId, int channelId, String strCommandName, String strCommandBody, bool commandRepeat, int commandRepeatCount)
 	    {
             this._objectId = objectId;
             this._channelId = channelId;
             this._commandName = strCommandName;
             this._commandBody = strCommandBody;
+            this._commandRepeat = commandRepeat;
+            this._commandRepeatCount = commandRepeatCount;
 	    }
     }
 }

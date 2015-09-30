@@ -1026,6 +1026,10 @@ namespace ForlornscTriviaBot {
             
             private global::System.Data.DataColumn columnCommandBody;
             
+            private global::System.Data.DataColumn columnCommandRepeatCount;
+            
+            private global::System.Data.DataColumn columnCommandRepeat;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public CommandDataTable() {
@@ -1093,6 +1097,22 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CommandRepeatCountColumn {
+                get {
+                    return this.columnCommandRepeatCount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CommandRepeatColumn {
+                get {
+                    return this.columnCommandRepeat;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1128,13 +1148,15 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public CommandRow AddCommandRow(ChannelRow parentChannelRowByFK_Channel, string CommandName, string CommandBody) {
+            public CommandRow AddCommandRow(ChannelRow parentChannelRowByFK_Channel, string CommandName, string CommandBody, int CommandRepeatCount, bool CommandRepeat) {
                 CommandRow rowCommandRow = ((CommandRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         null,
                         CommandName,
-                        CommandBody};
+                        CommandBody,
+                        CommandRepeatCount,
+                        CommandRepeat};
                 if ((parentChannelRowByFK_Channel != null)) {
                     columnValuesArray[1] = parentChannelRowByFK_Channel[0];
                 }
@@ -1171,6 +1193,8 @@ namespace ForlornscTriviaBot {
                 this.columnChannelID = base.Columns["ChannelID"];
                 this.columnCommandName = base.Columns["CommandName"];
                 this.columnCommandBody = base.Columns["CommandBody"];
+                this.columnCommandRepeatCount = base.Columns["CommandRepeatCount"];
+                this.columnCommandRepeat = base.Columns["CommandRepeat"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1184,6 +1208,10 @@ namespace ForlornscTriviaBot {
                 base.Columns.Add(this.columnCommandName);
                 this.columnCommandBody = new global::System.Data.DataColumn("CommandBody", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCommandBody);
+                this.columnCommandRepeatCount = new global::System.Data.DataColumn("CommandRepeatCount", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCommandRepeatCount);
+                this.columnCommandRepeat = new global::System.Data.DataColumn("CommandRepeat", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCommandRepeat);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnCommandID}, true));
                 this.columnCommandID.AutoIncrement = true;
@@ -1643,6 +1671,8 @@ namespace ForlornscTriviaBot {
             
             private global::System.Data.DataColumn columnQuestionAnswer;
             
+            private global::System.Data.DataColumn columnQuestionTopic;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public TriviaQuestionDataTable() {
@@ -1710,6 +1740,14 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn QuestionTopicColumn {
+                get {
+                    return this.columnQuestionTopic;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1745,13 +1783,14 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public TriviaQuestionRow AddTriviaQuestionRow(BotRow parentBotRowByFK_TriviaQuestion, string QuestionText, string QuestionAnswer) {
+            public TriviaQuestionRow AddTriviaQuestionRow(BotRow parentBotRowByFK_TriviaQuestion, string QuestionText, string QuestionAnswer, string QuestionTopic) {
                 TriviaQuestionRow rowTriviaQuestionRow = ((TriviaQuestionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         null,
                         QuestionText,
-                        QuestionAnswer};
+                        QuestionAnswer,
+                        QuestionTopic};
                 if ((parentBotRowByFK_TriviaQuestion != null)) {
                     columnValuesArray[1] = parentBotRowByFK_TriviaQuestion[0];
                 }
@@ -1788,6 +1827,7 @@ namespace ForlornscTriviaBot {
                 this.columnBotID = base.Columns["BotID"];
                 this.columnQuestionText = base.Columns["QuestionText"];
                 this.columnQuestionAnswer = base.Columns["QuestionAnswer"];
+                this.columnQuestionTopic = base.Columns["QuestionTopic"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1801,6 +1841,8 @@ namespace ForlornscTriviaBot {
                 base.Columns.Add(this.columnQuestionText);
                 this.columnQuestionAnswer = new global::System.Data.DataColumn("QuestionAnswer", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnQuestionAnswer);
+                this.columnQuestionTopic = new global::System.Data.DataColumn("QuestionTopic", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnQuestionTopic);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnTriviaQuestionID}, true));
                 this.columnTriviaQuestionID.AutoIncrement = true;
@@ -1811,6 +1853,7 @@ namespace ForlornscTriviaBot {
                 this.columnTriviaQuestionID.Unique = true;
                 this.columnQuestionText.MaxLength = 50;
                 this.columnQuestionAnswer.MaxLength = 50;
+                this.columnQuestionTopic.MaxLength = 30;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2203,6 +2246,38 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int CommandRepeatCount {
+                get {
+                    try {
+                        return ((int)(this[this.tableCommand.CommandRepeatCountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CommandRepeatCount\' in table \'Command\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCommand.CommandRepeatCountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool CommandRepeat {
+                get {
+                    try {
+                        return ((bool)(this[this.tableCommand.CommandRepeatColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CommandRepeat\' in table \'Command\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCommand.CommandRepeatColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ChannelRow ChannelRow {
                 get {
                     return ((ChannelRow)(this.GetParentRow(this.Table.ParentRelations["FK_Channel"])));
@@ -2246,6 +2321,30 @@ namespace ForlornscTriviaBot {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCommandBodyNull() {
                 this[this.tableCommand.CommandBodyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCommandRepeatCountNull() {
+                return this.IsNull(this.tableCommand.CommandRepeatCountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCommandRepeatCountNull() {
+                this[this.tableCommand.CommandRepeatCountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCommandRepeatNull() {
+                return this.IsNull(this.tableCommand.CommandRepeatColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCommandRepeatNull() {
+                this[this.tableCommand.CommandRepeatColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -2445,6 +2544,22 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string QuestionTopic {
+                get {
+                    try {
+                        return ((string)(this[this.tableTriviaQuestion.QuestionTopicColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'QuestionTopic\' in table \'TriviaQuestion\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTriviaQuestion.QuestionTopicColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public BotRow BotRow {
                 get {
                     return ((BotRow)(this.GetParentRow(this.Table.ParentRelations["FK_TriviaQuestion"])));
@@ -2488,6 +2603,18 @@ namespace ForlornscTriviaBot {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetQuestionAnswerNull() {
                 this[this.tableTriviaQuestion.QuestionAnswerColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsQuestionTopicNull() {
+                return this.IsNull(this.tableTriviaQuestion.QuestionTopicColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetQuestionTopicNull() {
+                this[this.tableTriviaQuestion.QuestionTopicColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -3475,10 +3602,12 @@ SELECT ChannelID, BotID, ChannelName FROM Channel WHERE (ChannelID = @ChannelID)
             tableMapping.ColumnMappings.Add("ChannelID", "ChannelID");
             tableMapping.ColumnMappings.Add("CommandName", "CommandName");
             tableMapping.ColumnMappings.Add("CommandBody", "CommandBody");
+            tableMapping.ColumnMappings.Add("CommandRepeatCount", "CommandRepeatCount");
+            tableMapping.ColumnMappings.Add("CommandRepeat", "CommandRepeat");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[Command] WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Command] WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -3487,23 +3616,30 @@ SELECT ChannelID, BotID, ChannelName FROM Channel WHERE (ChannelID = @ChannelID)
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandBody", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Command] ([ChannelID], [CommandName], [CommandBody]) VALUES (@" +
-                "ChannelID, @CommandName, @CommandBody);\r\nSELECT CommandID, ChannelID, CommandNam" +
-                "e, CommandBody FROM Command WHERE (CommandID = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Command] ([ChannelID], [CommandName], [CommandBody], [CommandRepeatCount], [CommandRepeat]) VALUES (@ChannelID, @CommandName, @CommandBody, @CommandRepeatCount, @CommandRepeat);
+SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat FROM Command WHERE (CommandID = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[Command] SET [ChannelID] = @ChannelID, [CommandName] = @CommandName, [CommandBody] = @CommandBody WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)));
-SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (CommandID = @CommandID)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Command] SET [ChannelID] = @ChannelID, [CommandName] = @CommandName, [CommandBody] = @CommandBody, [CommandRepeatCount] = @CommandRepeatCount, [CommandRepeat] = @CommandRepeat WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)));
+SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat FROM Command WHERE (CommandID = @CommandID)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -3511,6 +3647,10 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandBody", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -3527,7 +3667,8 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT CommandID, ChannelID, CommandName, CommandBody FROM dbo.Command";
+            this._commandCollection[0].CommandText = "SELECT        CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount," +
+                " CommandRepeat\r\nFROM            Command";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -3588,7 +3729,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody) {
+        public virtual int Delete(int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_CommandID));
             if ((Original_ChannelID.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -3614,6 +3755,22 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(0));
                 this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_CommandBody));
             }
+            if ((Original_CommandRepeatCount.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((int)(Original_CommandRepeatCount.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            if ((Original_CommandRepeat.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[10].Value = ((bool)(Original_CommandRepeat.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3634,7 +3791,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody) {
+        public virtual int Insert(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat) {
             if ((ChannelID.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((int)(ChannelID.Value));
             }
@@ -3652,6 +3809,18 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
             }
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = ((string)(CommandBody));
+            }
+            if ((CommandRepeatCount.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((int)(CommandRepeatCount.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((CommandRepeat.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((bool)(CommandRepeat.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -3673,7 +3842,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, int CommandID) {
+        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat, int CommandID) {
             if ((ChannelID.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(ChannelID.Value));
             }
@@ -3692,32 +3861,60 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(CommandBody));
             }
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(Original_CommandID));
-            if ((Original_ChannelID.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_ChannelID.Value));
+            if ((CommandRepeatCount.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(CommandRepeatCount.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
-            if ((Original_CommandName == null)) {
+            if ((CommandRepeat.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((bool)(CommandRepeat.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_CommandID));
+            if ((Original_ChannelID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(Original_ChannelID.Value));
+            }
+            else {
                 this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
-            else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_CommandName));
-            }
-            if ((Original_CommandBody == null)) {
+            if ((Original_CommandName == null)) {
                 this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_CommandBody));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_CommandName));
             }
-            this.Adapter.UpdateCommand.Parameters[10].Value = ((int)(CommandID));
+            if ((Original_CommandBody == null)) {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_CommandBody));
+            }
+            if ((Original_CommandRepeatCount.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(Original_CommandRepeatCount.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+            }
+            if ((Original_CommandRepeat.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((bool)(Original_CommandRepeat.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[16].Value = ((int)(CommandID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3738,8 +3935,8 @@ SELECT CommandID, ChannelID, CommandName, CommandBody FROM Command WHERE (Comman
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody) {
-            return this.Update(ChannelID, CommandName, CommandBody, Original_CommandID, Original_ChannelID, Original_CommandName, Original_CommandBody, Original_CommandID);
+        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat) {
+            return this.Update(ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat, Original_CommandID, Original_ChannelID, Original_CommandName, Original_CommandBody, Original_CommandRepeatCount, Original_CommandRepeat, Original_CommandID);
         }
     }
     
@@ -4261,10 +4458,11 @@ SELECT ScorerID, ChannelID, ScorerValue, ScorerUsername FROM Scorer WHERE (Score
             tableMapping.ColumnMappings.Add("BotID", "BotID");
             tableMapping.ColumnMappings.Add("QuestionText", "QuestionText");
             tableMapping.ColumnMappings.Add("QuestionAnswer", "QuestionAnswer");
+            tableMapping.ColumnMappings.Add("QuestionTopic", "QuestionTopic");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[TriviaQuestion] WHERE (([TriviaQuestionID] = @Original_TriviaQuestionID) AND ((@IsNull_BotID = 1 AND [BotID] IS NULL) OR ([BotID] = @Original_BotID)) AND ((@IsNull_QuestionText = 1 AND [QuestionText] IS NULL) OR ([QuestionText] = @Original_QuestionText)) AND ((@IsNull_QuestionAnswer = 1 AND [QuestionAnswer] IS NULL) OR ([QuestionAnswer] = @Original_QuestionAnswer)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [TriviaQuestion] WHERE (([TriviaQuestionID] = @Original_TriviaQuestionID) AND ((@IsNull_BotID = 1 AND [BotID] IS NULL) OR ([BotID] = @Original_BotID)) AND ((@IsNull_QuestionText = 1 AND [QuestionText] IS NULL) OR ([QuestionText] = @Original_QuestionText)) AND ((@IsNull_QuestionAnswer = 1 AND [QuestionAnswer] IS NULL) OR ([QuestionAnswer] = @Original_QuestionAnswer)) AND ((@IsNull_QuestionTopic = 1 AND [QuestionTopic] IS NULL) OR ([QuestionTopic] = @Original_QuestionTopic)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TriviaQuestionID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TriviaQuestionID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_BotID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BotID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -4273,24 +4471,26 @@ SELECT ScorerID, ChannelID, ScorerValue, ScorerUsername FROM Scorer WHERE (Score
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionText", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionText", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_QuestionAnswer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionAnswer", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_QuestionTopic", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionTopic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[TriviaQuestion] ([BotID], [QuestionText], [QuestionAnswer]) VA" +
-                "LUES (@BotID, @QuestionText, @QuestionAnswer);\r\nSELECT TriviaQuestionID, BotID, " +
-                "QuestionText, QuestionAnswer FROM TriviaQuestion WHERE (TriviaQuestionID = SCOPE" +
-                "_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [TriviaQuestion] ([BotID], [QuestionText], [QuestionAnswer], [QuestionTopic]) VALUES (@BotID, @QuestionText, @QuestionAnswer, @QuestionTopic);
+SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer, QuestionTopic FROM TriviaQuestion WHERE (TriviaQuestionID = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@BotID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BotID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionText", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionText", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionAnswer", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionTopic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[TriviaQuestion] SET [BotID] = @BotID, [QuestionText] = @QuestionText, [QuestionAnswer] = @QuestionAnswer WHERE (([TriviaQuestionID] = @Original_TriviaQuestionID) AND ((@IsNull_BotID = 1 AND [BotID] IS NULL) OR ([BotID] = @Original_BotID)) AND ((@IsNull_QuestionText = 1 AND [QuestionText] IS NULL) OR ([QuestionText] = @Original_QuestionText)) AND ((@IsNull_QuestionAnswer = 1 AND [QuestionAnswer] IS NULL) OR ([QuestionAnswer] = @Original_QuestionAnswer)));
-SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion WHERE (TriviaQuestionID = @TriviaQuestionID)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [TriviaQuestion] SET [BotID] = @BotID, [QuestionText] = @QuestionText, [QuestionAnswer] = @QuestionAnswer, [QuestionTopic] = @QuestionTopic WHERE (([TriviaQuestionID] = @Original_TriviaQuestionID) AND ((@IsNull_BotID = 1 AND [BotID] IS NULL) OR ([BotID] = @Original_BotID)) AND ((@IsNull_QuestionText = 1 AND [QuestionText] IS NULL) OR ([QuestionText] = @Original_QuestionText)) AND ((@IsNull_QuestionAnswer = 1 AND [QuestionAnswer] IS NULL) OR ([QuestionAnswer] = @Original_QuestionAnswer)) AND ((@IsNull_QuestionTopic = 1 AND [QuestionTopic] IS NULL) OR ([QuestionTopic] = @Original_QuestionTopic)));
+SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer, QuestionTopic FROM TriviaQuestion WHERE (TriviaQuestionID = @TriviaQuestionID)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@BotID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BotID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionText", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionText", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionAnswer", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QuestionTopic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TriviaQuestionID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TriviaQuestionID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_BotID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BotID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_BotID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BotID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -4298,6 +4498,8 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionText", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionText", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_QuestionAnswer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionAnswer", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionAnswer", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_QuestionTopic", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_QuestionTopic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "QuestionTopic", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TriviaQuestionID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "TriviaQuestionID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -4314,8 +4516,8 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM dbo.TriviaQuest" +
-                "ion";
+            this._commandCollection[0].CommandText = "SELECT        TriviaQuestionID, BotID, QuestionText, QuestionAnswer, QuestionTopi" +
+                "c\r\nFROM            TriviaQuestion";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -4376,7 +4578,7 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer) {
+        public virtual int Delete(int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer, string Original_QuestionTopic) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_TriviaQuestionID));
             if ((Original_BotID.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -4402,6 +4604,14 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(0));
                 this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_QuestionAnswer));
             }
+            if ((Original_QuestionTopic == null)) {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_QuestionTopic));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -4422,7 +4632,7 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer) {
+        public virtual int Insert(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer, string QuestionTopic) {
             if ((BotID.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((int)(BotID.Value));
             }
@@ -4440,6 +4650,12 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
             }
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = ((string)(QuestionAnswer));
+            }
+            if ((QuestionTopic == null)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(QuestionTopic));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4461,7 +4677,7 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer, int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer, int TriviaQuestionID) {
+        public virtual int Update(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer, string QuestionTopic, int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer, string Original_QuestionTopic, int TriviaQuestionID) {
             if ((BotID.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(BotID.Value));
             }
@@ -4480,32 +4696,46 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(QuestionAnswer));
             }
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(Original_TriviaQuestionID));
-            if ((Original_BotID.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_BotID.Value));
+            if ((QuestionTopic == null)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(QuestionTopic));
+            }
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_TriviaQuestionID));
+            if ((Original_BotID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((int)(Original_BotID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             if ((Original_QuestionText == null)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_QuestionText));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(Original_QuestionText));
             }
             if ((Original_QuestionAnswer == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_QuestionAnswer));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_QuestionAnswer));
             }
-            this.Adapter.UpdateCommand.Parameters[10].Value = ((int)(TriviaQuestionID));
+            if ((Original_QuestionTopic == null)) {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(Original_QuestionTopic));
+            }
+            this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(TriviaQuestionID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -4526,8 +4756,8 @@ SELECT TriviaQuestionID, BotID, QuestionText, QuestionAnswer FROM TriviaQuestion
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer, int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer) {
-            return this.Update(BotID, QuestionText, QuestionAnswer, Original_TriviaQuestionID, Original_BotID, Original_QuestionText, Original_QuestionAnswer, Original_TriviaQuestionID);
+        public virtual int Update(global::System.Nullable<int> BotID, string QuestionText, string QuestionAnswer, string QuestionTopic, int Original_TriviaQuestionID, global::System.Nullable<int> Original_BotID, string Original_QuestionText, string Original_QuestionAnswer, string Original_QuestionTopic) {
+            return this.Update(BotID, QuestionText, QuestionAnswer, QuestionTopic, Original_TriviaQuestionID, Original_BotID, Original_QuestionText, Original_QuestionAnswer, Original_QuestionTopic, Original_TriviaQuestionID);
         }
     }
     

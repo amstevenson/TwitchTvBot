@@ -183,6 +183,53 @@ namespace ForlornscTriviaBot.IRC
         }
 
         //
+        // Update the commands settings to determine if it will be repeated after a certain amount of
+        // chat messages.
+        //
+        public bool UpdateCommandRepeat(String commandName, int channelID, int commandRepeat, int commandRepeatCount)
+        {
+            String query =  "UPDATE Command " +
+                            "SET CommandRepeat = " + commandRepeat + ", CommandRepeatCount = " + commandRepeatCount + " " + 
+                            "WHERE ChannelID = '" + channelID + "' AND CommandName = '" + commandName + "'";
+
+            // Delete a specific command
+            if (_db.InsertUpdateDeleteRowQuery(query))
+            {
+                Console.WriteLine("Updating repeat command, success = true");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Updating repeat command, success = false");
+                return false;
+            }
+        }
+
+        //
+        // Update a command, change the body message.
+        //
+        public bool UpdateCommand(String commandName, int channelID, String commandBody)
+        {
+            String query = "UPDATE Command " +
+                            "SET CommandBody = '" + commandBody + "' " +
+                            "WHERE ChannelID = '" + channelID + "' AND CommandName = '" + commandName + "'";
+
+            Console.WriteLine(query);
+
+            // Delete a specific command
+            if (_db.InsertUpdateDeleteRowQuery(query))
+            {
+                Console.WriteLine("Updating repeat command, success = true");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Updating repeat command, success = false");
+                return false;
+            }
+        }
+
+        //
         // Get all trivia questions related to a specific bot. This may be changed in the future
         // so that the questions can be attributed to an individual channel instead, however, chances
         // are that the change would not be the right one.
@@ -632,7 +679,8 @@ namespace ForlornscTriviaBot.IRC
                     if (commands.Count > 0)
                         for (int i = 0; i < commands.Count; i++)
                         {
-                            file.WriteLine("commands " + commands[i].objectId + ": Name = " + commands[i].commandName);
+                            file.WriteLine("commands " + commands[i].objectId + ": Name = " + commands[i].commandName + ": Body = " + commands[i].commandBody + 
+                                ": Repeat = " + commands[i].commandRepeat + ": RepeatCount = " + commands[i].commandRepeatCount);
                         }
 
                     file.WriteLine("");

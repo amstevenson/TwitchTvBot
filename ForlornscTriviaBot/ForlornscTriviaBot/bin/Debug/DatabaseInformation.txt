@@ -1,32 +1,19 @@
 Bot 1: Name = TestBot
 Bot 2: Name = Test
-Bot 4: Name = ForlornBot
+Bot 4: Name = Test3
+Bot 5: Name = ForlornBot
 
 ------------------------------------------------------------------------------------
 
-Channel 1: BotID = 1 Name = ForlornSC
-Channel 2: BotID = 1 Name = Fumomo
-Channel 3: BotID = 4 Name = Forlornsc
+Channel 1: BotID = 4 Name = Test
+Channel 2: BotID = 1 Name = Test2
+Channel 3: BotID = 5 Name = Forlornsc
+Channel 4: BotID = 5 Name = Forlornscd
 
 ------------------------------------------------------------------------------------
 
-commands 1: Name = !bengil
-commands 2: Name = !fumomo
-commands 3: Name = !fumomia
-commands 4: Name = !slackunited
-commands 6: Name = !Fuwu
-commands 7: Name = !whatnext
-commands 10: Name = !Greenie
-commands 11: Name = !deathknight
-commands 14: Name = !Greencactaur
-commands 15: Name = !Forlornscyoutube
-commands 16: Name = !wanwan
-commands 18: Name = !nano
-commands 20: Name = !tea
-commands 21: Name = !amelia
-commands 22: Name = !bathtime
-commands 23: Name = !dreams
-commands 24: Name = !adam
+commands 1: Name = !fumomo: Body = I am a derpy Fumomo: Repeat = False: RepeatCount = 0
+commands 2: Name = !fumomo: Body = I am a derpy fumomo: Repeat = True: RepeatCount = 10
 
 ------------------------------------------------------------------------------------
 
