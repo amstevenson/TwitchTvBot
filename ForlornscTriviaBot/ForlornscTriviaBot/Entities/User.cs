@@ -13,7 +13,7 @@ namespace ForlornscTriviaBot.Entities
     // See the description of the Chat class for more information.
     //
     [DataContract]
-    class User
+    public class User
     {
         //
         // The name of the user.

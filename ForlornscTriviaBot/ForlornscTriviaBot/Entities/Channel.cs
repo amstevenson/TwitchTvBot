@@ -82,6 +82,18 @@ namespace ForlornscTriviaBot.Entities
         }
 
         //
+        // All of the moderators for a given channel.
+        // Used for commands requiring an elevated level.
+        //
+        private Chat _channelViewers;
+        [DataMember]
+        public Chat channelViewers
+        {
+            get { return _channelViewers; }
+            set { _channelViewers = value; }
+        }
+
+        //
         // First constructor, without scorers and commands
         //
         public Channel(int objectId, int botID, String strChannelName)

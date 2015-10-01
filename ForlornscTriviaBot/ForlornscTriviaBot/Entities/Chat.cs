@@ -14,7 +14,7 @@ namespace ForlornscTriviaBot.Entities
     // of only allowing moderators to use specific commands.
     //
     [DataContract]
-    class Chat
+    public class Chat
     {
         //
         // The number of moderators. If this doesnt change in validation for the thread

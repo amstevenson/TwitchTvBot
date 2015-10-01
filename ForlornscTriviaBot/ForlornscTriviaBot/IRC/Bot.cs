@@ -103,7 +103,7 @@ namespace ForlornscTriviaBot.IRC
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
             int intervalTimeInMilliseconds = 3000;
-            _triviaProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "trivia", channel), new Logger(), intervalTimeInMilliseconds);
+            _triviaProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "trivia", _channelID), new Logger(), intervalTimeInMilliseconds);
 
             _checkTrivia = new Thread(new ThreadStart(CheckTrivia));
             _checkTrivia.IsBackground = true;
@@ -113,8 +113,8 @@ namespace ForlornscTriviaBot.IRC
             // Start a thread that refreshes the users in the channel every minute or so.
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd H:mm:ss") + "... ... PROGRAM START");
-            intervalTimeInMilliseconds = 100000;
-            _userProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "user", channel), new Logger(), intervalTimeInMilliseconds);
+            intervalTimeInMilliseconds = 20000;
+            _userProcessor = new ThreadProcessor(new Worker(new Logger(), _botData, "user", _channelID), new Logger(), intervalTimeInMilliseconds);
 
             _checkUsers = new Thread(new ThreadStart(CheckChannelUsers));
             _checkUsers.IsBackground = true;
@@ -180,13 +180,10 @@ namespace ForlornscTriviaBot.IRC
                             String serverAndUsername = normalMessage[0];
                             String type = normalMessage[1];
                             String channel = normalMessage[2] = normalMessage[2].Replace("#", "");
-                            String message = normalMessage[3] = normalMessage[3].Replace(":", "").Replace("'", "");
+                            String message = normalMessage[3] = normalMessage[3].TrimStart(':', ' ').Replace("'", "");
 
                             // The amount of commands we have.
                             int commandCount = _botData.channels[_channelID].channelCommands.Length;
-
-                            // Increment the message count.
-                            _messageCount++;
 
                             // PRIVMSG refers to a message by a user. 
                             if (type == "PRIVMSG")
@@ -194,6 +191,9 @@ namespace ForlornscTriviaBot.IRC
                                 // Extract strings. 
                                 String firstWord = message.Split(new char[] {' '}, 2)[0];
                                 String username = serverAndUsername.Split(new char[] { '!' }, 2)[0].Replace(":", "");
+
+                                // Increment the message count.
+                                _messageCount++;
 
                                 // Perform all of the command checks. 
                                 for(int i = 0; i < commandCount; i++)
@@ -209,7 +209,16 @@ namespace ForlornscTriviaBot.IRC
 
                                     // Check if a command is repeatable or not, and if so, determine if we are at the point
                                     // where we need to write it to the IRC.
+                                    if(_botData.channels[_channelID].channelCommands[i].commandRepeat)
+                                    {
+                                        if (_messageCount % _botData.channels[_channelID].channelCommands[i].commandRepeatCount == 0)
+                                        {
+                                            String commandMessage = "PRIVMSG #" + channel + " :" +
+                                                _botData.channels[_channelID].channelCommands[i].commandBody;
 
+                                            SendMessage(commandMessage);
+                                        }
+                                    }
                                 }
 
                                 // Check if the starting message is the answer to a trivia question
@@ -236,7 +245,6 @@ namespace ForlornscTriviaBot.IRC
                                     // Add a new command.
                                     case "!addcommand":
 
-
                                         _chatCommands.AddCommand(message, _botData, commandCount, _channelID);
 
                                         break;
@@ -244,7 +252,11 @@ namespace ForlornscTriviaBot.IRC
                                     // Delete a command
                                     case "!deletecommand":
 
-                                        _chatCommands.DeleteCommand(message, _botData, _channelID);
+                                        // Go through each of the moderators that we have in the current channel, and
+                                        // if there is a match, allow the method to be invoked.
+                                        // This logic is applied multiple times through several of the other cases listed below.
+                                        if(isUserModerator(username))
+                                            _chatCommands.DeleteCommand(message, _botData, _channelID);
 
                                         break;
 
@@ -252,32 +264,38 @@ namespace ForlornscTriviaBot.IRC
                                     // the number of lines before the command body is written to the IRC.
                                     case "!editcommandrepeat":
 
-                                        _chatCommands.UpdateCommandRepeat(message, _botData, _channelID);
-
+                                        if(isUserModerator(username))
+                                            _chatCommands.UpdateCommandRepeat(message, _botData, _channelID);
+                                        
                                         break;
 
                                     // Change the body of a command.
                                     case "!editcommand":
 
-                                        _chatCommands.UpdateCommand(message, _botData, _channelID);
-
+                                        if (isUserModerator(username))
+                                            _chatCommands.UpdateCommand(message, _botData, _channelID);
+                                        
                                         break;
 
                                     // Start the trivia
                                     case "!starttrivia":
 
-                                        // Toggle state and start trivia
-                                        _botData.triviaActive = true;
-                                        _botData.triviaTimePQuestion = 15.00f;
-                                        _chatCommands.SetTriviaQuestion(_botData);
-
+                                        if(isUserModerator(username))
+                                        {
+                                            // Toggle state and start trivia
+                                            _botData.triviaActive = true;
+                                            _botData.triviaTimePQuestion = 15.00f;
+                                            _chatCommands.SetTriviaQuestion(_botData);
+                                        }
+                                        
                                         break;
 
                                     // Add a new trivia question
                                     case "!addtriviaquestion":
 
-                                        _chatCommands.AddTriviaQuestion(message, _botData);
-
+                                        if (isUserModerator(username))
+                                                _chatCommands.AddTriviaQuestion(message, _botData);
+                                        
                                         break;
 
                                     // Delete a trivia question
@@ -288,8 +306,9 @@ namespace ForlornscTriviaBot.IRC
                                     // Stop the trivia
                                     case "!stoptrivia":
 
-                                        // Toggle state and stop trivia
-                                        _botData.triviaActive = false;
+                                        if (isUserModerator(username))
+                                            _botData.triviaActive = false;
+                                        
 
                                         break;
 
@@ -417,24 +436,32 @@ namespace ForlornscTriviaBot.IRC
 
         }
 
-        /// <summary>
-        /// Special characters are represented by a certain number after the &# section.
-        /// This method appends that value to the string, so that it can be represented and
-        /// interpreted by a HTML encoder.
-        /// </summary>
-        /// <param name="text">The string text</param>
-        /// <returns>Encoded string.</returns>
-        public string HTMLEncodeSpecialChars(string text)
+        //
+        // Go through each of the moderators that we have in the current channel, and
+        // if there is a match, allow the method to be invoked.
+        //
+        private bool isUserModerator(String username)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (char c in text)
+            try
             {
-                if (c > 127) // special chars
-                    sb.Append(String.Format("&#{0};", (int)c));
-                else
-                    sb.Append(c);
+                for (int i = 0; i < _botData.channels[_channelID].channelViewers.numModerators; i++)
+                {
+                    if (_botData.channels[_channelID].channelViewers.channelModerators[i].username.Equals(username))
+                        return true;
+                }
             }
-            return sb.ToString();
+            catch(NullReferenceException ex)
+            {
+                Console.WriteLine("Null reference: " + ex.Message);
+            }
+
+            // Before we return false (as the for loop did not find a match), print a message out to the IRC to
+            // indicate that the user has insufficient privaledges. 
+            String messageToSend = "PRIVMSG #" + _channel + " : Woah! You can't do this " + username + "! You're not a...not a...mo...moder...moderator!";
+            SendMessage(messageToSend);
+
+            // If there are no moderators, or if there is not a match.
+            return false;
         }
     }
 }

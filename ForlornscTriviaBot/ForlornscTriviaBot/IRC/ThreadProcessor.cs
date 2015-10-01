@@ -103,14 +103,14 @@ namespace ForlornscTriviaBot.IRC
         ILogger _logger;
         BotData _botData;
         String _threadType;
-        String _channel;
+        int _channelID;
 
-        public Worker(ILogger logger, BotData botData, String threadType, String channel)
+        public Worker(ILogger logger, BotData botData, String threadType, int channelID)
         {
             _logger = logger;
             _botData = botData;
             _threadType = threadType;
-            _channel = channel;
+            _channelID = channelID;
         }
 
 
@@ -163,16 +163,6 @@ namespace ForlornscTriviaBot.IRC
                 }
 
             }
-
-            // Four seconds addition pausing of the thread allocated to
-            // managing this class. 
-            /*
-            for (int i = 0; i < 4; i++)
-            {
-                System.Threading.Thread.Sleep(1000);
-                _logger.Log("I'm Working...Sleep " + i, 3);
-            }
-            */
         }
 
         private void ProcessUsers()
@@ -182,7 +172,7 @@ namespace ForlornscTriviaBot.IRC
 
             // Update the list of users(moderators)/those that are able to use elevated commands,
             // such as !deletecommand etc. 
-            string url = "http://tmi.twitch.tv/group/user/" + _channel.ToLower() + "/chatters";
+            string url = "http://tmi.twitch.tv/group/user/" + _botData.channels[_channelID].channelName.ToLower() + "/chatters";
             string method = "get";
 
             // Create a json parser 
@@ -194,10 +184,11 @@ namespace ForlornscTriviaBot.IRC
             // Create a results object based on the response of the distributed API
             Chat returnModerators = jsonParser.ConvertDictionaryToResults(returnDictionary);
 
-            for(int i = 0; i < returnModerators.numModerators; i++)
-            {
-                Console.WriteLine("Moderator name: " + returnModerators.channelModerators[i].username);
-            }
+            // Add the moderators to the BotData list
+            _botData.channels[_channelID].channelViewers = returnModerators;
+            _botData.channels[_channelID].channelViewers.numModerators = returnModerators.channelModerators.Length;
+
+            Console.WriteLine("Updating moderators has been triggered.");
         }
     }
 
