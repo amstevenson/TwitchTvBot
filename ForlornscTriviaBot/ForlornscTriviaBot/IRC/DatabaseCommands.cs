@@ -110,11 +110,10 @@ namespace ForlornscTriviaBot.IRC
         // Note to self however that this should only be given to moderators, else things
         // can get a little bit tricky or complicated if people decide to spam it. 
         //
-        public bool AddCommand(int channelID, String commandName, String commandBody)
+        public bool AddCommand(int channelID, String commandName, String commandBody, String commandCreatedBy)
         {
-            String query = "INSERT INTO Command (ChannelID, CommandName, CommandBody) " +
-                           "VALUES (' " + channelID + "', '" + commandName + "', '" + commandBody + "' );" +
-                           "SELECT CAST(Scope_Identity() AS int)";
+            String query = "INSERT INTO Command (ChannelID, CommandName, CommandBody, CommandCreatedBy) " +
+                           "VALUES ('" + channelID + "', '" + commandName + "', '" + commandBody + "', '" + commandCreatedBy + "');";
 
             // Add new Command entry to the database
             if (_db.InsertUpdateDeleteRowQuery(query))
@@ -615,8 +614,9 @@ namespace ForlornscTriviaBot.IRC
                     for (int j = 0; j < amountOfCommands; j++)
                         Console.WriteLine("Command " + botData.channels[i].channelCommands[j].objectId + 
                             ": Name = " + botData.channels[i].channelCommands[j].commandName + 
-                            " Body = " + botData.channels[i].channelCommands[j].commandBody);
-                
+                            " Body = " + botData.channels[i].channelCommands[j].commandBody +
+                            " Createdby = " + botData.channels[i].channelCommands[j].commandCreatedBy);
+
                 // Scorers/viewers
                 int amountOfScorers = botData.channels[i].scorers.Length;
 
@@ -680,7 +680,7 @@ namespace ForlornscTriviaBot.IRC
                         for (int i = 0; i < commands.Count; i++)
                         {
                             file.WriteLine("commands " + commands[i].objectId + ": Name = " + commands[i].commandName + ": Body = " + commands[i].commandBody + 
-                                ": Repeat = " + commands[i].commandRepeat + ": RepeatCount = " + commands[i].commandRepeatCount);
+                                ": Repeat = " + commands[i].commandRepeat + ": RepeatCount = " + commands[i].commandRepeatCount + ": createdby : " + commands[i].commandCreatedBy);
                         }
 
                     file.WriteLine("");

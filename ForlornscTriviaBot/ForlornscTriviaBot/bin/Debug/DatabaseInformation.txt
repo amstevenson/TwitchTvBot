@@ -8,15 +8,12 @@ Bot 5: Name = ForlornBot
 Channel 1: BotID = 4 Name = Test
 Channel 2: BotID = 1 Name = Test2
 Channel 3: BotID = 5 Name = Forlornsc
-Channel 4: BotID = 5 Name = Forlornscd
 
 ------------------------------------------------------------------------------------
 
-commands 1: Name = !fumomo: Body = I am a derpy Fumomo: Repeat = False: RepeatCount = 0
-commands 2: Name = !fumomo: Body = I am a derpy fumomo: Repeat = False: RepeatCount = 5
-commands 3: Name = !slackunited: Body = Fumomo smells OpieOP: Repeat = False: RepeatCount = 5
-commands 4: Name = !bathtime: Body = Its time for a bath! Time to wash wash wash my body. My rubber ducky makes me feel lucky.: Repeat = False: RepeatCount = 0
-commands 5: Name = !help: Body = Do you have a command you want to use? If so, refer to the following commands for more information !addcommand, !editcommand, !editcommandrepeat, !deletecommand.: Repeat = True: RepeatCount = 30
+commands 2: Name = !derp: Body = derp: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 3: Name = !test: Body = test: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 5: Name = !teste: Body = esf: Repeat = False: RepeatCount = 0: createdby : wafflesarecoolz
 
 ------------------------------------------------------------------------------------
 

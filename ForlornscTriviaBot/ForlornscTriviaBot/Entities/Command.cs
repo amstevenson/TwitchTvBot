@@ -90,9 +90,20 @@ namespace ForlornscTriviaBot.Entities
         }
 
         //
+        // The name of the user who created the command.
+        //
+        private String _commandCreatedBy;
+        [DataMember]
+        public String commandCreatedBy
+        {
+            get { return _commandCreatedBy; }
+            set { _commandCreatedBy = value; }
+        }
+
+        //
         // Constructor
         //
-        public Command(int objectId, int channelId, String strCommandName, String strCommandBody, bool commandRepeat, int commandRepeatCount)
+        public Command(int objectId, int channelId, String strCommandName, String strCommandBody, bool commandRepeat, int commandRepeatCount, String strCommandCreatedBy)
 	    {
             this._objectId = objectId;
             this._channelId = channelId;
@@ -100,6 +111,8 @@ namespace ForlornscTriviaBot.Entities
             this._commandBody = strCommandBody;
             this._commandRepeat = commandRepeat;
             this._commandRepeatCount = commandRepeatCount;
+            this._commandCreatedBy = strCommandCreatedBy;
 	    }
+
     }
 }

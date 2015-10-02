@@ -129,7 +129,7 @@ namespace ForlornscTriviaBot.IRC
             // Test for printing all values.
             _databaseCommands.PrintAllTestData();
 
-            // Print out the botData for testing purposes.
+            // TESTING PURPOSES ONLY
             _databaseCommands.PrintBotData(_botData);
         }
 
@@ -245,7 +245,7 @@ namespace ForlornscTriviaBot.IRC
                                     // Add a new command.
                                     case "!addcommand":
 
-                                        _chatCommands.AddCommand(message, _botData, commandCount, _channelID);
+                                        _chatCommands.AddCommand(message, username, _botData, commandCount, _channelID);
 
                                         break;
                                     
@@ -255,7 +255,7 @@ namespace ForlornscTriviaBot.IRC
                                         // Go through each of the moderators that we have in the current channel, and
                                         // if there is a match, allow the method to be invoked.
                                         // This logic is applied multiple times through several of the other cases listed below.
-                                        if(isUserModerator(username))
+                                        if (isUserModerator(username) || (isUserValidForCommand(username)))
                                             _chatCommands.DeleteCommand(message, _botData, _channelID);
 
                                         break;
@@ -266,15 +266,15 @@ namespace ForlornscTriviaBot.IRC
 
                                         if(isUserModerator(username))
                                             _chatCommands.UpdateCommandRepeat(message, _botData, _channelID);
-                                        
+
                                         break;
 
                                     // Change the body of a command.
                                     case "!editcommand":
 
-                                        if (isUserModerator(username))
+                                        if (isUserModerator(username) || isUserValidForCommand(username))
                                             _chatCommands.UpdateCommand(message, _botData, _channelID);
-                                        
+
                                         break;
 
                                     // Start the trivia
@@ -287,7 +287,7 @@ namespace ForlornscTriviaBot.IRC
                                             _botData.triviaTimePQuestion = 15.00f;
                                             _chatCommands.SetTriviaQuestion(_botData);
                                         }
-                                        
+
                                         break;
 
                                     // Add a new trivia question
@@ -328,6 +328,9 @@ namespace ForlornscTriviaBot.IRC
                                     default: 
                                         break;
                                 }
+
+                                // Pause the thread for 4 seconds, so we don't get the bot globally banned or timed out!
+                                Thread.Sleep(4000);
                             }
                         }
 
@@ -461,6 +464,38 @@ namespace ForlornscTriviaBot.IRC
             SendMessage(messageToSend);
 
             // If there are no moderators, or if there is not a match.
+            return false;
+        }
+
+        //
+        // This method checks if a command is being accessed by the user who created it. So this should be external to the above method for
+        // that reason alone. This method does not allow non moderators to delete other non moderators commands, or alter them.
+        //
+        private bool isUserValidForCommand(String username)
+        {
+            try
+            {
+                for(int i = 0; i < _botData.channels[_channelID].channelCommands.Length; i++)
+                {
+                    // For each command we have for this channel (max 30), determine if the user who is requesting to
+                    // use an elevated method, is the one who created it or not. If so, then they should be allowed to
+                    // delete or modify it. So in this case, return true.
+                    if (_botData.channels[_channelID].channelCommands[i].commandCreatedBy.Equals(username))
+                        return true;
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine("Null reference: " + ex.Message);
+                return false;
+            }
+
+            // Before we return false (as the for loop did not find a match), print a message out to the IRC to
+            // indicate that the user has insufficient privaledges. 
+            String messageToSend = "PRIVMSG #" + _channel + " : My mum, " + username + ", always told me it was rude to delete other peoples commands! Unless it's for good reason! ";
+            SendMessage(messageToSend);
+
+            // If the above does not trigger true, return false by default.
             return false;
         }
     }

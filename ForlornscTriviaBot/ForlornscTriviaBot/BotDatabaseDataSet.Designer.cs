@@ -1030,6 +1030,8 @@ namespace ForlornscTriviaBot {
             
             private global::System.Data.DataColumn columnCommandRepeat;
             
+            private global::System.Data.DataColumn columnCommandCreatedBy;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public CommandDataTable() {
@@ -1113,6 +1115,14 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CommandCreatedByColumn {
+                get {
+                    return this.columnCommandCreatedBy;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1148,7 +1158,7 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public CommandRow AddCommandRow(ChannelRow parentChannelRowByFK_Channel, string CommandName, string CommandBody, int CommandRepeatCount, bool CommandRepeat) {
+            public CommandRow AddCommandRow(ChannelRow parentChannelRowByFK_Channel, string CommandName, string CommandBody, int CommandRepeatCount, bool CommandRepeat, string CommandCreatedBy) {
                 CommandRow rowCommandRow = ((CommandRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -1156,7 +1166,8 @@ namespace ForlornscTriviaBot {
                         CommandName,
                         CommandBody,
                         CommandRepeatCount,
-                        CommandRepeat};
+                        CommandRepeat,
+                        CommandCreatedBy};
                 if ((parentChannelRowByFK_Channel != null)) {
                     columnValuesArray[1] = parentChannelRowByFK_Channel[0];
                 }
@@ -1195,6 +1206,7 @@ namespace ForlornscTriviaBot {
                 this.columnCommandBody = base.Columns["CommandBody"];
                 this.columnCommandRepeatCount = base.Columns["CommandRepeatCount"];
                 this.columnCommandRepeat = base.Columns["CommandRepeat"];
+                this.columnCommandCreatedBy = base.Columns["CommandCreatedBy"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1212,6 +1224,8 @@ namespace ForlornscTriviaBot {
                 base.Columns.Add(this.columnCommandRepeatCount);
                 this.columnCommandRepeat = new global::System.Data.DataColumn("CommandRepeat", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCommandRepeat);
+                this.columnCommandCreatedBy = new global::System.Data.DataColumn("CommandCreatedBy", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCommandCreatedBy);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnCommandID}, true));
                 this.columnCommandID.AutoIncrement = true;
@@ -1222,6 +1236,7 @@ namespace ForlornscTriviaBot {
                 this.columnCommandID.Unique = true;
                 this.columnCommandName.MaxLength = 50;
                 this.columnCommandBody.MaxLength = 50;
+                this.columnCommandCreatedBy.MaxLength = 200;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2278,6 +2293,22 @@ namespace ForlornscTriviaBot {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CommandCreatedBy {
+                get {
+                    try {
+                        return ((string)(this[this.tableCommand.CommandCreatedByColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CommandCreatedBy\' in table \'Command\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCommand.CommandCreatedByColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ChannelRow ChannelRow {
                 get {
                     return ((ChannelRow)(this.GetParentRow(this.Table.ParentRelations["FK_Channel"])));
@@ -2345,6 +2376,18 @@ namespace ForlornscTriviaBot {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCommandRepeatNull() {
                 this[this.tableCommand.CommandRepeatColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCommandCreatedByNull() {
+                return this.IsNull(this.tableCommand.CommandCreatedByColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCommandCreatedByNull() {
+                this[this.tableCommand.CommandCreatedByColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -3604,10 +3647,11 @@ SELECT ChannelID, BotID, ChannelName FROM Channel WHERE (ChannelID = @ChannelID)
             tableMapping.ColumnMappings.Add("CommandBody", "CommandBody");
             tableMapping.ColumnMappings.Add("CommandRepeatCount", "CommandRepeatCount");
             tableMapping.ColumnMappings.Add("CommandRepeat", "CommandRepeat");
+            tableMapping.ColumnMappings.Add("CommandCreatedBy", "CommandCreatedBy");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Command] WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Command] WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)) AND ((@IsNull_CommandCreatedBy = 1 AND [CommandCreatedBy] IS NULL) OR ([CommandCreatedBy] = @Original_CommandCreatedBy)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -3620,26 +3664,30 @@ SELECT ChannelID, BotID, ChannelName FROM Channel WHERE (ChannelID = @ChannelID)
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandCreatedBy", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandCreatedBy", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Command] ([ChannelID], [CommandName], [CommandBody], [CommandRepeatCount], [CommandRepeat]) VALUES (@ChannelID, @CommandName, @CommandBody, @CommandRepeatCount, @CommandRepeat);
-SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat FROM Command WHERE (CommandID = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Command] ([ChannelID], [CommandName], [CommandBody], [CommandRepeatCount], [CommandRepeat], [CommandCreatedBy]) VALUES (@ChannelID, @CommandName, @CommandBody, @CommandRepeatCount, @CommandRepeat, @CommandCreatedBy);
+SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat, CommandCreatedBy FROM Command WHERE (CommandID = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandCreatedBy", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [Command] SET [ChannelID] = @ChannelID, [CommandName] = @CommandName, [CommandBody] = @CommandBody, [CommandRepeatCount] = @CommandRepeatCount, [CommandRepeat] = @CommandRepeat WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)));
-SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat FROM Command WHERE (CommandID = @CommandID)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Command] SET [ChannelID] = @ChannelID, [CommandName] = @CommandName, [CommandBody] = @CommandBody, [CommandRepeatCount] = @CommandRepeatCount, [CommandRepeat] = @CommandRepeat, [CommandCreatedBy] = @CommandCreatedBy WHERE (([CommandID] = @Original_CommandID) AND ((@IsNull_ChannelID = 1 AND [ChannelID] IS NULL) OR ([ChannelID] = @Original_ChannelID)) AND ((@IsNull_CommandName = 1 AND [CommandName] IS NULL) OR ([CommandName] = @Original_CommandName)) AND ((@IsNull_CommandBody = 1 AND [CommandBody] IS NULL) OR ([CommandBody] = @Original_CommandBody)) AND ((@IsNull_CommandRepeatCount = 1 AND [CommandRepeatCount] IS NULL) OR ([CommandRepeatCount] = @Original_CommandRepeatCount)) AND ((@IsNull_CommandRepeat = 1 AND [CommandRepeat] IS NULL) OR ([CommandRepeat] = @Original_CommandRepeat)) AND ((@IsNull_CommandCreatedBy = 1 AND [CommandCreatedBy] IS NULL) OR ([CommandCreatedBy] = @Original_CommandCreatedBy)));
+SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat, CommandCreatedBy FROM Command WHERE (CommandID = @CommandID)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandBody", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandBody", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandCreatedBy", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ChannelID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ChannelID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -3651,6 +3699,8 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeatCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeatCount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandRepeat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandRepeat", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandRepeat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CommandCreatedBy", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CommandCreatedBy", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CommandCreatedBy", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CommandID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "CommandID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -3668,7 +3718,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT        CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount," +
-                " CommandRepeat\r\nFROM            Command";
+                " CommandRepeat, CommandCreatedBy\r\nFROM            Command";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -3729,7 +3779,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat) {
+        public virtual int Delete(int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat, string Original_CommandCreatedBy) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_CommandID));
             if ((Original_ChannelID.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -3771,6 +3821,14 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
                 this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
+            if ((Original_CommandCreatedBy == null)) {
+                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[12].Value = ((string)(Original_CommandCreatedBy));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3791,7 +3849,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat) {
+        public virtual int Insert(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, string CommandCreatedBy) {
             if ((ChannelID.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((int)(ChannelID.Value));
             }
@@ -3822,6 +3880,12 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
             else {
                 this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
+            if ((CommandCreatedBy == null)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(CommandCreatedBy));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3842,7 +3906,7 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat, int CommandID) {
+        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, string CommandCreatedBy, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat, string Original_CommandCreatedBy, int CommandID) {
             if ((ChannelID.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(ChannelID.Value));
             }
@@ -3873,48 +3937,62 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
             else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_CommandID));
-            if ((Original_ChannelID.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(Original_ChannelID.Value));
+            if ((CommandCreatedBy == null)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(CommandCreatedBy));
+            }
+            this.Adapter.UpdateCommand.Parameters[6].Value = ((int)(Original_CommandID));
+            if ((Original_ChannelID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((int)(Original_ChannelID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             if ((Original_CommandName == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_CommandName));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_CommandName));
             }
             if ((Original_CommandBody == null)) {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_CommandBody));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(Original_CommandBody));
             }
             if ((Original_CommandRepeatCount.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(Original_CommandRepeatCount.Value));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((int)(Original_CommandRepeatCount.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
             }
             if ((Original_CommandRepeat.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((bool)(Original_CommandRepeat.Value));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((bool)(Original_CommandRepeat.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[16].Value = ((int)(CommandID));
+            if ((Original_CommandCreatedBy == null)) {
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[18].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((string)(Original_CommandCreatedBy));
+            }
+            this.Adapter.UpdateCommand.Parameters[19].Value = ((int)(CommandID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3935,8 +4013,8 @@ SELECT CommandID, ChannelID, CommandName, CommandBody, CommandRepeatCount, Comma
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat) {
-            return this.Update(ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat, Original_CommandID, Original_ChannelID, Original_CommandName, Original_CommandBody, Original_CommandRepeatCount, Original_CommandRepeat, Original_CommandID);
+        public virtual int Update(global::System.Nullable<int> ChannelID, string CommandName, string CommandBody, global::System.Nullable<int> CommandRepeatCount, global::System.Nullable<bool> CommandRepeat, string CommandCreatedBy, int Original_CommandID, global::System.Nullable<int> Original_ChannelID, string Original_CommandName, string Original_CommandBody, global::System.Nullable<int> Original_CommandRepeatCount, global::System.Nullable<bool> Original_CommandRepeat, string Original_CommandCreatedBy) {
+            return this.Update(ChannelID, CommandName, CommandBody, CommandRepeatCount, CommandRepeat, CommandCreatedBy, Original_CommandID, Original_ChannelID, Original_CommandName, Original_CommandBody, Original_CommandRepeatCount, Original_CommandRepeat, Original_CommandCreatedBy, Original_CommandID);
         }
     }
     

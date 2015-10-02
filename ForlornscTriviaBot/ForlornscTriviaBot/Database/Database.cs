@@ -98,7 +98,7 @@ namespace ForlornscTriviaBot.Database
                             while (reader.Read())
                             {
                                 Command c = new Command((int)reader["CommandID"], (int)reader["ChannelID"], (String)reader["CommandName"], (String)reader["CommandBody"],
-                                    (bool)reader["CommandRepeat"], (int)reader["CommandRepeatCount"]);
+                                    (bool)reader["CommandRepeat"], (int)reader["CommandRepeatCount"], (String)reader["CommandCreatedBy"]);
                                 commands.Add(c);
                             }
 

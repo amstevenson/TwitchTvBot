@@ -47,7 +47,7 @@ namespace ForlornscTriviaBot.IRC
         //
         // Adds a new command, called as a response to !addCommand. Should only be used by a moderator. 
         //
-        public void AddCommand(String wholeChatMessage, BotData botData, int commandCount, int channelID)
+        public void AddCommand(String wholeChatMessage, String createdBy, BotData botData, int commandCount, int channelID)
         {
             int numberOfSpaces = wholeChatMessage.TrimEnd(' ').Split(' ').Length - 1;
 
@@ -71,7 +71,7 @@ namespace ForlornscTriviaBot.IRC
                         && !commandBody.ToLower().StartsWith("/r9kbeta") && !commandBody.ToLower().StartsWith("/r9kbetaoff"))
                     {
                         // If the length is correct
-                        if (commandBody.Length < 200)
+                        if (commandBody.Length < 300)
                         {
                             // If we are below the maximum ammount of commands
                             if (commandCount < 30)
@@ -80,7 +80,7 @@ namespace ForlornscTriviaBot.IRC
                                 if (!_databaseCommands.DoesCommandExist(botData.channels[channelID].objectId, commandName))
                                 {
                                     String messageToSend = "PRIVMSG #" + _channel + " : " + commandName + " has been added successfully.";
-                                    _databaseCommands.AddCommand(botData.channels[channelID].objectId, commandName, commandBody);
+                                    _databaseCommands.AddCommand(botData.channels[channelID].objectId, commandName, commandBody, createdBy);
 
                                     // Add the new command to the list.
                                     List<Command> commands = _databaseCommands.GetCommands(botData.channels[channelID].objectId);
