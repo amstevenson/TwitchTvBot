@@ -122,9 +122,7 @@ namespace ForlornscTriviaBot.IRC
             _checkUsers.Start();
 
             // Login to the service by providing credentials
-            SendMessage("PASS " + password);
-            SendMessage("NICK " + botName);
-            SendMessage("JOIN #" + channel.ToLower());
+            LoginToIRC(password, botName, channel);
 
             // Test for printing all values.
             _databaseCommands.PrintAllTestData();
@@ -157,7 +155,8 @@ namespace ForlornscTriviaBot.IRC
                         if (pingCheck[0] == "PING")
                         {
                             // pingCheck[1] is the server.
-                            SendMessage("PONG " + pingCheck[1]);
+                            _writer.WriteLine("PONG " + pingCheck[1]);
+                            _writer.Flush();
                             Console.WriteLine("PONG " + pingCheck[1]);
                         }
 
@@ -199,10 +198,9 @@ namespace ForlornscTriviaBot.IRC
                                 for(int i = 0; i < commandCount; i++)
                                 {
                                     // Check if the starting message features a command. 
-                                    if (firstWord.Equals(_botData.channels[_channelID].channelCommands[i].commandName))
+                                    if (firstWord.ToLower().Equals(_botData.channels[_channelID].channelCommands[i].commandName.ToLower()))
                                     {
-                                        String commandMessage = "PRIVMSG #" + channel + " :" +
-                                            _botData.channels[_channelID].channelCommands[i].commandBody;
+                                        String commandMessage = _botData.channels[_channelID].channelCommands[i].commandBody;
 
                                         SendMessage(commandMessage);
                                     }
@@ -213,17 +211,17 @@ namespace ForlornscTriviaBot.IRC
                                     {
                                         if (_messageCount % _botData.channels[_channelID].channelCommands[i].commandRepeatCount == 0)
                                         {
-                                            String commandMessage = "PRIVMSG #" + channel + " :" +
-                                                _botData.channels[_channelID].channelCommands[i].commandBody;
+                                            String commandMessage = _botData.channels[_channelID].channelCommands[i].commandBody;
 
                                             SendMessage(commandMessage);
                                         }
                                     }
                                 }
 
-                                // Check if the starting message is the answer to a trivia question
-                                // TODO STILL
                                 //
+                                // Check if the starting message is the answer to a trivia question
+                                // TODO
+
 
                                 //
                                 // Chat Commands
@@ -252,11 +250,7 @@ namespace ForlornscTriviaBot.IRC
                                     // Delete a command
                                     case "!deletecommand":
 
-                                        // Go through each of the moderators that we have in the current channel, and
-                                        // if there is a match, allow the method to be invoked.
-                                        // This logic is applied multiple times through several of the other cases listed below.
-                                        if (isUserModerator(username) || (isUserValidForCommand(username)))
-                                            _chatCommands.DeleteCommand(message, _botData, _channelID);
+                                        _chatCommands.DeleteCommand(username, message, _botData, _channelID);
 
                                         break;
 
@@ -264,37 +258,35 @@ namespace ForlornscTriviaBot.IRC
                                     // the number of lines before the command body is written to the IRC.
                                     case "!editcommandrepeat":
 
-                                        if(isUserModerator(username))
-                                            _chatCommands.UpdateCommandRepeat(message, _botData, _channelID);
+                                        _chatCommands.UpdateCommandRepeat(username, message, _botData, _channelID);
 
                                         break;
 
                                     // Change the body of a command.
                                     case "!editcommand":
 
-                                        if (isUserModerator(username) || isUserValidForCommand(username))
-                                            _chatCommands.UpdateCommand(message, _botData, _channelID);
+                                        _chatCommands.UpdateCommand(username, message, _botData, _channelID);
 
                                         break;
 
                                     // Start the trivia
                                     case "!starttrivia":
 
-                                        if(isUserModerator(username))
-                                        {
+                                        //if(isUserModerator(username))
+                                        //{
                                             // Toggle state and start trivia
                                             _botData.triviaActive = true;
                                             _botData.triviaTimePQuestion = 15.00f;
                                             _chatCommands.SetTriviaQuestion(_botData);
-                                        }
+                                        //}
 
                                         break;
 
                                     // Add a new trivia question
                                     case "!addtriviaquestion":
 
-                                        if (isUserModerator(username))
-                                                _chatCommands.AddTriviaQuestion(message, _botData);
+                                        //if (isUserModerator(username))
+                                            _chatCommands.AddTriviaQuestion(message, _botData);
                                         
                                         break;
 
@@ -306,10 +298,9 @@ namespace ForlornscTriviaBot.IRC
                                     // Stop the trivia
                                     case "!stoptrivia":
 
-                                        if (isUserModerator(username))
+                                        //if (isUserModerator(username))
                                             _botData.triviaActive = false;
                                         
-
                                         break;
 
                                     // Set the timeout for the trivia questions.
@@ -328,9 +319,6 @@ namespace ForlornscTriviaBot.IRC
                                     default: 
                                         break;
                                 }
-
-                                // Pause the thread for 4 seconds, so we don't get the bot globally banned or timed out!
-                                Thread.Sleep(4000);
                             }
                         }
 
@@ -390,11 +378,25 @@ namespace ForlornscTriviaBot.IRC
         }
 
         //
+        // Provide all of the details requested by the IRC to log into the server.
+        // Password, nickname and channel, in that order.
+        //
+        private void LoginToIRC(String pass, String nick, String channel)
+        {
+            _writer.WriteLine("PASS " + pass);
+            _writer.Flush();
+            _writer.WriteLine("NICK " + nick);
+            _writer.Flush();
+            _writer.WriteLine("JOIN #" + channel.ToLower());
+            _writer.Flush();
+        }
+
+        //
         // Write a message to the channel the bot is currently in.
         //
         public void SendMessage(string message)
         {
-            _writer.WriteLine(message + "\r\n");
+            _writer.WriteLine("PRIVMSG #" + _channel + " : " + message + "\r\n");
             _writer.Flush();
         }
 
@@ -435,68 +437,6 @@ namespace ForlornscTriviaBot.IRC
             {
                 Console.WriteLine("Thread not defined/instansiated.");
             }
-
-
-        }
-
-        //
-        // Go through each of the moderators that we have in the current channel, and
-        // if there is a match, allow the method to be invoked.
-        //
-        private bool isUserModerator(String username)
-        {
-            try
-            {
-                for (int i = 0; i < _botData.channels[_channelID].channelViewers.numModerators; i++)
-                {
-                    if (_botData.channels[_channelID].channelViewers.channelModerators[i].username.Equals(username))
-                        return true;
-                }
-            }
-            catch(NullReferenceException ex)
-            {
-                Console.WriteLine("Null reference: " + ex.Message);
-            }
-
-            // Before we return false (as the for loop did not find a match), print a message out to the IRC to
-            // indicate that the user has insufficient privaledges. 
-            String messageToSend = "PRIVMSG #" + _channel + " : Woah! You can't do this " + username + "! You're not a...not a...mo...moder...moderator!";
-            SendMessage(messageToSend);
-
-            // If there are no moderators, or if there is not a match.
-            return false;
-        }
-
-        //
-        // This method checks if a command is being accessed by the user who created it. So this should be external to the above method for
-        // that reason alone. This method does not allow non moderators to delete other non moderators commands, or alter them.
-        //
-        private bool isUserValidForCommand(String username)
-        {
-            try
-            {
-                for(int i = 0; i < _botData.channels[_channelID].channelCommands.Length; i++)
-                {
-                    // For each command we have for this channel (max 30), determine if the user who is requesting to
-                    // use an elevated method, is the one who created it or not. If so, then they should be allowed to
-                    // delete or modify it. So in this case, return true.
-                    if (_botData.channels[_channelID].channelCommands[i].commandCreatedBy.Equals(username))
-                        return true;
-                }
-            }
-            catch (NullReferenceException ex)
-            {
-                Console.WriteLine("Null reference: " + ex.Message);
-                return false;
-            }
-
-            // Before we return false (as the for loop did not find a match), print a message out to the IRC to
-            // indicate that the user has insufficient privaledges. 
-            String messageToSend = "PRIVMSG #" + _channel + " : My mum, " + username + ", always told me it was rude to delete other peoples commands! Unless it's for good reason! ";
-            SendMessage(messageToSend);
-
-            // If the above does not trigger true, return false by default.
-            return false;
         }
     }
 }

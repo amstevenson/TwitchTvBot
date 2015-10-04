@@ -8,12 +8,27 @@ Bot 5: Name = ForlornBot
 Channel 1: BotID = 4 Name = Test
 Channel 2: BotID = 1 Name = Test2
 Channel 3: BotID = 5 Name = Forlornsc
+Channel 4: BotID = 5 Name = shenmueiii
+Channel 5: BotID = 5 Name = shenmueii
 
 ------------------------------------------------------------------------------------
 
-commands 2: Name = !derp: Body = derp: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 2: Name = !derp: Body = wawe: Repeat = False: RepeatCount = 0: createdby : forlornsc
 commands 3: Name = !test: Body = test: Repeat = False: RepeatCount = 0: createdby : forlornsc
 commands 5: Name = !teste: Body = esf: Repeat = False: RepeatCount = 0: createdby : wafflesarecoolz
+commands 6: Name = !twitter: Body = If you want to help out the channel, please feel free to retweet, favourite or follow the stream on Twitter: Twitter.com/forlornsc: Repeat = True: RepeatCount = 30: createdby : forlornsc
+commands 7: Name = !help: Body = If you want to play around with the bot at all, please write any of the following in chat: !addcommand, !editcommand, !editcommandrepeat, !deletecommand.: Repeat = True: RepeatCount = 50: createdby : forlornsc
+commands 8: Name = !meaningoflife: Body = 42: Repeat = False: RepeatCount = 0: createdby : pantalonesconqueso
+commands 9: Name = !innit: Body = Kappa: Repeat = False: RepeatCount = 0: createdby : pantalonesconqueso
+commands 10: Name = !Turkeysandwich: Body = sorry not feeling it right now: Repeat = False: RepeatCount = 0: createdby : kablamjamdan
+commands 11: Name = !seanisaturkeyfucker: Body = Sean likes to do special things to turkeys: Repeat = True: RepeatCount = 4: createdby : forlornsc
+commands 12: Name = !test: Body = oooo: Repeat = True: RepeatCount = 2: createdby : forlornsc
+commands 13: Name = !seanlikesturkeys: Body = Oh the smell of turkeys makes me really randy, so says Sean: Repeat = True: RepeatCount = 3: createdby : forlornsc
+commands 14: Name = !testington: Body = dawdwad: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 15: Name = !t: Body = t: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 17: Name = !fff: Body = This has changed: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 18: Name = !water: Body = changed: Repeat = False: RepeatCount = 0: createdby : forlornsc
+commands 19: Name = !aaa: Body = oaowdkaowdk: Repeat = False: RepeatCount = 0: createdby : forlornsc
 
 ------------------------------------------------------------------------------------
 

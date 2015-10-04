@@ -123,7 +123,7 @@ namespace ForlornscTriviaBot
             try
             {
                 // Remember: hashtag denotes channel and : denotes a sentence. 
-                bot.SendMessage("PRIVMSG #" + txtChannel.Text.ToString().ToLower() + " : " + txtSend.Text.ToString());
+                bot.SendMessage(txtSend.Text.ToString());
             }
             catch (NullReferenceException err)
             {
